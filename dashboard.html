@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CFOTH Control Center</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f172a;--bg2:#1e293b;--bg3:#273449;--border:rgba(148,163,184,0.12);
+  --text:#e2e8f0;--muted:#94a3b8;--accent:#6366f1;--accent2:#8b5cf6;
+  --green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem}
+.container{max-width:1600px;margin:0 auto}
+h1{font-size:2.2rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.3rem}
+.sub{color:var(--muted);margin-bottom:2rem;font-size:.95rem}
+h2{font-size:1.3rem;margin:2rem 0 1rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);color:var(--accent)}
+h3{font-size:1rem;margin:1.5rem 0 .8rem;color:var(--muted)}
+
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;text-align:center}
+.stat-card .val{font-size:2rem;font-weight:700}
+.stat-card .lbl{font-size:.8rem;color:var(--muted);margin-top:.2rem}
+.stat-card.g .val{color:var(--green)}.stat-card.y .val{color:var(--yellow)}.stat-card.r .val{color:var(--red)}.stat-card.a .val{color:var(--accent)}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(500px,1fr));gap:1.5rem}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem}
+
+.server-section{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.server-header{padding:1rem 1.2rem;background:var(--bg3);display:flex;justify-content:space-between;align-items:center}
+.server-header h3{margin:0;color:var(--text)}
+.server-body{padding:1.2rem}
+
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{background:var(--bg3);padding:.5rem .7rem;text-align:left;color:var(--muted);font-weight:600}
+td{padding:.45rem .7rem;border-bottom:1px solid var(--border)}
+tr:hover{background:rgba(99,102,241,0.05)}
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.status-online .status-dot{background:var(--green)}
+.status-offline .status-dot{background:var(--red)}
+.status-warn .status-dot{background:var(--yellow)}
+.port{color:var(--muted);font-family:monospace;font-size:.8rem}
+.tag{display:inline-block;padding:.1rem .5rem;border-radius:4px;font-size:.7rem;font-weight:600;margin-left:.3rem}
+.tag-main{background:rgba(99,102,241,.2);color:var(--accent)}
+.tag-ginnie{background:rgba(249,115,22,.2);color:var(--orange)}
+.tag-trade{background:rgba(234,179,8,.2);color:var(--yellow)}
+
+.recovery{background:rgba(99,102,241,.08);border-left:3px solid var(--accent);padding:.8rem 1rem;margin:.8rem 0;border-radius:0 8px 8px 0;font-family:monospace;font-size:.8rem;color:var(--muted);white-space:pre-wrap;overflow-x:auto}
+.recovery code{color:var(--green)}
+
+.mem-bar{height:6px;border-radius:3px;background:var(--bg3);margin-top:.3rem;overflow:hidden}
+.mem-fill{height:100%;border-radius:3px;transition:width .5s}
+.mem-ok{background:var(--green)}.mem-warn{background:var(--yellow)}.mem-danger{background:var(--red)}
+.mem-label{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:.2rem}
+
+.actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.btn{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .2s}
+.btn:hover{background:var(--accent);border-color:var(--accent)}
+
+@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>⚡ CFOTH Control Center</h1>
+<p class="sub">All services across Main VPS + Ginnie · Updated <span id="updated"></span></p>
+
+<!-- ===== RESOURCES ===== -->
+<h2>📊 System Resources</h2>
+<div class="stat-row">
+  <div class="stat-card"><div class="lbl">Main RAM</div><div class="val">7.7/11 GB</div><div class="mem-bar"><div class="mem-fill mem-ok" style="width:70%"></div></div><div class="mem-label"><span>70% used</span><span>4.0 GB free</span></div></div>
+  <div class="stat-card"><div class="lbl">Main Disk</div><div class="val y">79%</div><div class="mem-bar"><div class="mem-fill mem-warn" style="width:79%"></div></div><div class="mem-label"><span>152/199 GB</span><span>42 GB free ⚠️</span></div></div>
+  <div class="stat-card"><div class="lbl">Ginnie RAM</div><div class="val g">52%</div><div class="mem-bar"><div class="mem-fill mem-ok" style="width:52%"></div></div><div class="mem-label"><span>4.0/7.8 GB</span><span>3.7 GB free</span></div></div>
+  <div class="stat-card"><div class="lbl">Ginnie Disk</div><div class="val y">70%</div><div class="mem-bar"><div class="mem-fill mem-warn" style="width:70%"></div></div><div class="mem-label"><span>68/96 GB</span><span>29 GB free</span></div></div>
+  <div class="stat-card"><div class="lbl">Main CPU</div><div class="val a">6</div><div class="lbl">cores</div></div>
+  <div class="stat-card"><div class="lbl">Ginnie CPU</div><div class="val a">2</div><div class="lbl">cores</div></div>
+</div>
+
+<!-- ===== MAIN VPS ===== -->
+<h2>🖥 Main VPS — 185.218.125.121 (Contabo)</h2>
+
+<div class="grid2">
+  <!-- Core Services -->
+  <div class="server-section">
+    <div class="server-header"><h3>🔧 Core Services</h3><span class="tag tag-main">MAIN</span></div>
+    <div class="server-body">
+      <table>
+        <tr><th>Service</th><th>Port</th><th>Status</th><th>Memory</th></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Hermes Agent Gateway</td><td class="port">8642</td><td>online</td><td>466 MB</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>vibe-trading MCP</td><td class="port">—</td><td>online</td><td>216 MB</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>PostgreSQL 17 (Docker)</td><td class="port">5432</td><td>online</td><td>—</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>PostgreSQL 16 (System)</td><td class="port">5433</td><td>online</td><td>—</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Redis (LGIAP)</td><td class="port">6380</td><td>online</td><td>8 MB</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Redis (System)</td><td class="port">6379</td><td>online</td><td>—</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Ginnie SSH Tunnel (Ollama)</td><td class="port">11434</td><td>online</td><td>6 MB</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>PM2 Daemon</td><td class="port">—</td><td>online</td><td>54 MB</td></tr>
+      </table>
+      <div class="recovery">
+<strong>🔄 Recovery:</strong>
+<code>ssh -i ~/.ssh/hermes_key root@185.218.125.121</code>
+<code>pm2 list</code> — check all processes
+<code>pm2 restart all</code> — restart everything
+      </div>
+    </div>
+  </div>
+
+  <!-- Sasin Services -->
+  <div class="server-section">
+    <div class="server-header"><h3>🎓 Sasin EMBA Platform</h3><span class="tag tag-main">MAIN</span></div>
+    <div class="server-body">
+      <table>
+        <tr><th>Service</th><th>URL</th><th>Status</th><th>Memory</th></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Hub Server</td><td class="port">sasin.cfoth.ai</td><td>online</td><td>54 MB</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Capture Server</td><td class="port">capture.sasin.cfoth.ai</td><td>online</td><td>73 MB</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>2nd Brain Server</td><td class="port">brain (8400)</td><td>online</td><td>42 MB</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Nginx (HTTP/HTTPS)</td><td class="port">80/443</td><td>online</td><td>3 MB</td></tr>
+      </table>
+      <div class="recovery">
+<strong>🔄 Recovery:</strong>
+<code>pm2 restart hub-server capture-server brain-server</code>
+Hub serves <code>sasin.cfoth.ai</code> via nginx → :8081
+Capture serves <code>capture.sasin.cfoth.ai</code> via nginx → :8895
+Brain API at <code>localhost:8400</code> (proxied at /brain/)
+      </div>
+    </div>
+  </div>
+
+  <!-- LGIAP -->
+  <div class="server-section">
+    <div class="server-header"><h3>🤖 LGIAP (LINE Archive)</h3><span class="tag tag-main">MAIN</span></div>
+    <div class="server-body">
+      <table>
+        <tr><th>Service</th><th>Port</th><th>Status</th><th>Memory</th></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>LGIAP API</td><td class="port">8085</td><td>online</td><td>78 MB</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>LGIAP Worker (5 proc)</td><td class="port">—</td><td>online</td><td>25 MB</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>PostgreSQL (lgiap DB)</td><td class="port">5432</td><td>online</td><td>—</td></tr>
+      </table>
+      <div class="recovery">
+<strong>🔄 Recovery:</strong>
+<code>pm2 restart lgiap-api lgiap-worker</code>
+API: <code>https://lgiap.sasin.cfoth.ai/health</code>
+Webhook: <code>https://lgiap.sasin.cfoth.ai/webhook</code>
+Worker logs: <code>pm2 logs lgiap-worker</code>
+<strong>⚠️ Needs LINE credentials (CHANNEL_SECRET + TOKEN) to go live</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Other Services -->
+  <div class="server-section">
+    <div class="server-header"><h3>📦 Other Services</h3><span class="tag tag-main">MAIN</span></div>
+    <div class="server-body">
+      <table>
+        <tr><th>Service</th><th>Port</th><th>Status</th></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Live Assistant Bot</td><td class="port">9000</td><td>online</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Gemini Vision Proxy</td><td class="port">8499</td><td>online</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Market API</td><td class="port">5050</td><td>online</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Sasin Billing</td><td class="port">8500</td><td>online</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Upload Server</td><td class="port">8897</td><td>online</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Old Dashboard (8888)</td><td class="port">8888</td><td>online</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Old 2nd Brain (8899)</td><td class="port">8899</td><td>online</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Search Server</td><td class="port">5001</td><td>online</td></tr>
+      </table>
+      <div class="recovery">
+<strong>🔄 Recovery:</strong>
+<code>pm2 list</code> for PM2-managed services
+Non-PM2: <code>ps aux | grep python3</code> then restart manually
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GINNIE VPS ===== -->
+<h2>🟠 Ginnie VPS — 72.60.43.17 (Hostinger)</h2>
+
+<div class="grid2">
+  <div class="server-section">
+    <div class="server-header"><h3>🐳 Docker Containers</h3><span class="tag tag-ginnie">GINNIE</span></div>
+    <div class="server-body">
+      <table>
+        <tr><th>Container</th><th>Port</th><th>Status</th></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>OpenClaw (Bot Gateway)</td><td class="port">18789</td><td>23h up</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Traefik (Reverse Proxy)</td><td class="port">80/443</td><td>9d up</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Freqtrade #1</td><td class="port">—</td><td>4w up</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Freqtrade #2</td><td class="port">8081</td><td>8w up</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>MT5 VNC</td><td class="port">6901</td><td>5w up</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>VerityTech</td><td class="port">—</td><td>4w up</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Trading Agents Web</td><td class="port">—</td><td>4w up</td></tr>
+      </table>
+      <div class="recovery">
+<strong>🔄 Recovery:</strong>
+<code>ssh -i ~/.ssh/ginnie-recovery root@72.60.43.17</code>
+<code>docker ps</code> — check all containers
+<code>docker restart openclaw-cbxv-openclaw-1</code> — restart OpenClaw
+<code>docker restart traefik-traefik-1</code> — restart proxy
+      </div>
+    </div>
+  </div>
+
+  <div class="server-section">
+    <div class="server-header"><h3>🧠 Ollama + AI</h3><span class="tag tag-ginnie">GINNIE</span></div>
+    <div class="server-body">
+      <table>
+        <tr><th>Model</th><th>Size</th><th>Purpose</th></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>bge-m3</td><td>1.2 GB</td><td>LGIAP embeddings (via tunnel :11434)</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>qwen2.5:3b</td><td>1.9 GB</td><td>General LLM</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>nomic-embed-text</td><td>274 MB</td><td>Alternative embeddings</td></tr>
+      </table>
+      <div class="recovery">
+<strong>🔄 Recovery:</strong>
+On Ginnie: <code>systemctl restart ollama</code>
+From Main: <code>ssh -i ~/.ssh/ginnie-recovery -N -L 11434:127.0.0.1:11434 root@72.60.43.17 &</code>
+Test: <code>curl http://127.0.0.1:11434/api/tags</code>
+<strong>Auto-fallback:</strong> LGIAP uses Gemini embeddings if Ginnie is down.
+      </div>
+    </div>
+  </div>
+
+  <div class="server-section">
+    <div class="server-header"><h3>📈 Trading Systems</h3><span class="tag tag-trade">TRADE</span></div>
+    <div class="server-body">
+      <table>
+        <tr><th>Service</th><th>Status</th></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Oracle Maw Orchestrator</td><td>online</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Oracle Memory API</td><td>online</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Freqtrade Dashboard</td><td>online</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Freqtrade Web Dashboard</td><td>online</td></tr>
+        <tr class="status-online"><td><span class="status-dot"></span>Freqtrade News Monitor</td><td>online</td></tr>
+      </table>
+      <div class="recovery">
+<strong>🔄 Recovery:</strong>
+<code>systemctl restart freqtrade-dashboard freqtrade-webdash freqtrade-news-monitor</code>
+<code>systemctl restart oracle-maw oracle-memory</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="server-section">
+    <div class="server-header"><h3>⏰ Cron Jobs (Ginnie)</h3><span class="tag tag-ginnie">GINNIE</span></div>
+    <div class="server-body">
+      <table>
+        <tr><th>Schedule</th><th>Job</th></tr>
+        <tr><td>19:00 daily</td><td>Freqtrade NFI Strategy Update</td></tr>
+        <tr><td>Every 5 min</td><td>OpenClaw Watchdog</td></tr>
+        <tr><td>Every 5 min</td><td>Cross-Monitor MEW</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CRON JOBS (Main VPS) ===== -->
+<h2>⏰ Cron Jobs — Main VPS</h2>
+<div class="server-section" style="max-width:800px">
+  <div class="server-header"><h3>Hermes-Managed Cron</h3></div>
+  <div class="server-body">
+    <table>
+      <tr><th>Job</th><th>Schedule</th><th>Runs</th></tr>
+      <tr class="status-online"><td><span class="status-dot"></span>Portfolio Grid Monitor</td><td>Every 30m</td><td>1,902</td></tr>
+      <tr class="status-online"><td><span class="status-dot"></span>Sasin Upload Watchdog</td><td>—</td><td>active</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== QUICK RECOVERY COMMANDS ===== -->
+<h2>🚨 Emergency Recovery</h2>
+<div class="server-section" style="max-width:800px">
+  <div class="server-body">
+    <div class="recovery"><strong>Main VPS full restart:</strong>
+<code>ssh -i ~/.ssh/hermes_key root@185.218.125.121</code>
+<code>pm2 restart all</code>
+<code>systemctl reload nginx</code>
+<code>curl http://127.0.0.1:8081/health</code> (Hub)
+<code>curl http://127.0.0.1:8085/health</code> (LGIAP)
+    </div>
+    <div class="recovery"><strong>Ginnie VPS full restart:</strong>
+<code>ssh -i ~/.ssh/ginnie-recovery root@72.60.43.17</code>
+<code>docker restart $(docker ps -q)</code>
+<code>systemctl restart ollama</code>
+<strong>Then from Main VPS:</strong>
+<code>ssh -i ~/.ssh/ginnie-recovery -N -L 11434:127.0.0.1:11434 root@72.60.43.17 &</code>
+    </div>
+    <div class="recovery"><strong>LGIAP quick check:</strong>
+<code>curl https://lgiap.sasin.cfoth.ai/health</code>
+<code>pm2 logs lgiap-worker --lines 10</code>
+<code>psql -h 127.0.0.1 -U postgres -d lgiap -c "SELECT count(*) FROM messages"</code>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CLEANUP CANDIDATES ===== -->
+<h2>🧹 Cleanup Candidates</h2>
+<div class="server-section" style="max-width:800px">
+  <div class="server-header"><h3>Items to Review</h3></div>
+  <div class="server-body">
+    <table>
+      <tr><th>Server</th><th>Item</th><th>Size</th><th>Risk</th></tr>
+      <tr><td>Main</td><td>Old 2nd Brain (port 8899)</td><td>—</td><td>⚠️ Verify first</td></tr>
+      <tr><td>Main</td><td>Old Dashboard server.py (port 8888)</td><td>—</td><td>⚠️ Verify first</td></tr>
+      <tr><td>Main</td><td>Polymarket-BTC Trading Bot dir</td><td>1.7 MB</td><td>⚠️ Verify</td></tr>
+      <tr><td>Main</td><td>DeepTutor directory</td><td>208 MB</td><td>⚠️ If unused</td></tr>
+      <tr><td>Main</td><td>/data/state.db</td><td>1,009 MB</td><td>⚠️ Hermes sessions</td></tr>
+      <tr><td>Main</td><td>/data/sessions</td><td>841 MB</td><td>⚠️ Hermes session data</td></tr>
+      <tr><td>Ginnie</td><td>/home/oracle</td><td>3.6 GB</td><td>⚠️ Unknown contents</td></tr>
+      <tr><td>Ginnie</td><td>/root/ghq</td><td>1.1 GB</td><td>⚠️ Git cache?</td></tr>
+      <tr><td>Ginnie</td><td>Freqtrade #2 container</td><td>—</td><td>⚠️ Two instances</td></tr>
+    </table>
+  </div>
+</div>
+
+</div>
+<script>
+document.getElementById('updated').textContent = new Date().toLocaleString();
+</script>
+</body>
+</html>

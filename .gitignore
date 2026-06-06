@@ -1,36 +1,19 @@
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-dist/
-venv/
-.venv/
+# Secrets (never commit)
+google-key.json
+oauth_client.json
+oauth_token.json
+*.pem
 
-# Node
-node_modules/
-.next/
-out/
+# Media files (large, stored on VPS + Drive)
+media/
+
+# Python cache
+__pycache__/
+*.pyc
 
 # Environment
 .env
-.env.local
-.env.production
-
-# IDE
-.vscode/
-.idea/
-*.swp
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Data
-/data/
-archive/
-*.log
-
-# Secrets
-*.pem
-credentials.json
-service-account.json
+*.env
+line.env
+db.env
+drive.env

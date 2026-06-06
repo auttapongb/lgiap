@@ -1,0 +1,2500 @@
+PRODUCT REQUIREMENTS DOCUMENT (PRD)
+LINE GROUP INTELLIGENCE & ARCHIVE PLATFORM (LGIAP)
+
+Version: 1.0
+Author: Auttapong Budhsombatwarakul
+Document Type: Complete Product Requirements Document
+Use Case: LINE Group Archive, AI Knowledge Base, EMBA Group Intelligence
+
+======================================================================
+TABLE OF CONTENTS
+======================================================================
+
+1. Executive Summary
+2. Business Objectives
+3. Scope
+4. Functional Requirements
+5. AI Intelligence Requirements
+6. Storage Requirements
+7. Security Requirements
+8. Compliance Requirements
+9. Reporting Requirements
+10. Scalability Requirements
+11. Availability Requirements
+12. Future Roadmap
+13. Technical Architecture
+14. Definition of Success
+15. Recommended Technology Stack
+16. System Architecture
+17. AI / LLM Architecture
+18. Advanced AI Features
+19. Media Processing
+20. Data Model
+21. Dashboard Requirements
+22. Security & Privacy Enhancements
+23. Cost Estimate
+24. Implementation Roadmap
+25. Future Vision
+26. EMBA-Specific Killer Features
+27. Risks, Constraints, and Limitations
+28. Acceptance Criteria
+29. Appendix: Example Outputs
+
+======================================================================
+1. EXECUTIVE SUMMARY
+======================================================================
+
+The LINE Group Intelligence & Archive Platform is an AI-powered system designed to continuously capture, archive, organize, analyze, and retrieve communications occurring within designated LINE groups.
+
+The platform will serve as a permanent institutional memory for communities such as EMBA cohorts, project teams, executive groups, alumni networks, and professional organizations.
+
+The system will preserve conversations, media, links, documents, and interactions while providing advanced AI-powered understanding of complex multi-participant discussions.
+
+The product is not simply a chat recorder. It is a Group Knowledge Operating System that transforms unstructured group conversations into a searchable, organized, AI-assisted knowledge base.
+
+Core capabilities include:
+
+- Continuous monitoring of LINE group chats after bot installation
+- Chronological capture of text, stickers, links, images, videos, files, and metadata
+- Permanent storage in structured and unstructured repositories
+- Daily replay of conversations in original order
+- AI-powered summaries, topic mapping, action item detection, and conversation reconstruction
+- Dashboard for search, reports, people insights, and knowledge retrieval
+- Compliance-aware storage and permission management
+
+======================================================================
+2. BUSINESS OBJECTIVES
+======================================================================
+
+Primary Objectives
+
+1. Prevent loss of valuable knowledge shared within LINE groups.
+2. Create a searchable permanent knowledge repository.
+3. Provide AI-powered understanding of discussions.
+4. Improve visibility of decisions, action items, and commitments.
+5. Reduce information overload in large group conversations.
+6. Enable historical playback and auditability of discussions.
+7. Support EMBA cohorts, student groups, professional communities, and corporate teams.
+8. Convert fragmented conversations into structured organizational memory.
+9. Reduce the need for manual note-taking and message searching.
+10. Enable intelligent Q&A over historical group conversations.
+
+Success Metrics
+
+- 100% message capture after bot installation.
+- 99.99% storage durability.
+- Less than 5 seconds retrieval time for standard date/person/topic searches.
+- 95%+ AI conversation classification accuracy after tuning.
+- Daily AI summary generated automatically.
+- Ability to reconstruct complete daily discussions.
+- 90%+ successful media archival rate.
+- 90%+ useful action item extraction precision after feedback loop.
+- User satisfaction score above 4.5/5 for archive and search features.
+- Zero critical security incidents.
+
+Business Value
+
+For EMBA groups:
+- No missed assignment, deadline, or professor instruction.
+- Easier tracking of shared files, links, slides, and photos.
+- Better understanding of confusing multi-person conversations.
+- A permanent cohort memory for networking, learning, and collaboration.
+
+For enterprise groups:
+- Auditability of decisions.
+- Searchable operational memory.
+- Reduced knowledge loss when people leave.
+- Faster onboarding of new members.
+
+======================================================================
+3. SCOPE
+======================================================================
+
+3.1 In Scope
+
+Message Types
+
+- Text messages
+- Stickers
+- Emojis
+- Images
+- Videos
+- Audio messages
+- Documents
+- Shared files
+- URLs and hyperlinks
+- Join events
+- Leave events
+- Group name changes
+- Bot interactions
+- User mentions if available
+- Message metadata
+- Message unsend events if provided by LINE webhook
+
+AI Features
+
+- Summarization
+- Topic clustering
+- Thread reconstruction
+- Participant analysis
+- Action item extraction
+- Decision extraction
+- Sentiment analysis
+- Knowledge graph generation
+- Semantic search
+- RAG-based Q&A
+- Daily digest
+- Weekly digest
+- Monthly digest
+- Conversation swimlane mapping
+- Assignment and deadline detection
+- Media OCR and document extraction
+- Voice transcription where supported
+
+Storage Features
+
+- Structured message database
+- Object storage for images, videos, audio, and documents
+- Daily archive folder generation
+- CSV, JSON, HTML, TXT, PDF export
+- Full chronological replay
+- Permanent storage policy
+- Backup and restore
+
+Dashboard Features
+
+- Daily timeline view
+- Search by person, date, topic, file, or keyword
+- AI chat over historical records
+- Topic explorer
+- People explorer
+- Action item tracker
+- Decision log
+- Shared file library
+- Shared link library
+- Admin console
+
+3.2 Out of Scope
+
+- Historical messages before the bot is installed in the group
+- Private one-to-one LINE chats unless explicitly integrated separately
+- Voice call recording
+- Video call recording
+- Reading deleted content if platform policy disallows it
+- Bypassing LINE platform limitations
+- Archiving without group consent
+- Covert surveillance
+- Manual recovery of LINE messages unavailable through the API
+
+3.3 Assumptions
+
+- The bot has been invited to the LINE group.
+- LINE Official Account settings allow group participation.
+- Webhook is enabled and accessible.
+- Group members have been informed that archiving is active.
+- The system has permission to store media and metadata.
+- Storage provider such as Google Drive, Google Cloud Storage, or AWS S3 is available.
+- AI processing is allowed under the data handling policy.
+
+======================================================================
+4. FUNCTIONAL REQUIREMENTS
+======================================================================
+
+FR-001 GROUP MONITORING
+
+Description:
+The bot shall continuously monitor all joined LINE groups after being invited and authorized.
+
+Requirements:
+- Monitor 24x7.
+- Capture supported LINE webhook events in real time.
+- Support multiple groups.
+- Support high message volume.
+- Detect group ID.
+- Detect sender user ID.
+- Detect message type.
+- Detect timestamp.
+- Handle retries and duplicate events.
+- Handle webhook failures gracefully.
+
+Acceptance Criteria:
+- Messages are captured within 5 seconds of webhook receipt.
+- Duplicate messages are not stored twice.
+- System records every supported event type.
+- System remains operational after restart.
+
+--------------------------------------------------
+
+FR-002 MESSAGE ARCHIVAL
+
+Description:
+System shall archive all supported messages permanently.
+
+Data Captured:
+- Message ID
+- LINE event ID
+- Timestamp
+- User ID
+- Display name
+- Group ID
+- Group name
+- Message type
+- Text content
+- Media metadata
+- Sticker metadata
+- Link metadata
+- Reply metadata if available
+- Original event JSON
+- Processing status
+- Created date
+- Updated date
+
+Acceptance Criteria:
+- Original timestamps are preserved.
+- Original chronological ordering is preserved.
+- Raw event payload is stored for audit and future reprocessing.
+- Message content can be exported by day, group, person, or topic.
+
+--------------------------------------------------
+
+FR-003 MEDIA ARCHIVAL
+
+Description:
+System shall archive all supported media assets.
+
+Supported Media:
+- Images
+- Videos
+- Audio files
+- Documents
+- Other files
+- Stickers where metadata is available
+
+Storage Requirements:
+- Original quality retained where API allows.
+- Metadata retained.
+- Duplicate detection enabled.
+- File checksum generated.
+- Storage URL stored in database.
+- Media organized by group and date.
+- Failed downloads retried automatically.
+
+Example Folder Structure:
+
+EMBA-Line-Archive/
+  2026-06-06/
+    messages.jsonl
+    messages.html
+    images/
+    videos/
+    audio/
+    files/
+    stickers/
+    links.csv
+    ai_summary.md
+    swimlane.html
+
+Acceptance Criteria:
+- Media files are linked to original messages.
+- Media files can be viewed from daily replay.
+- Missing media is flagged with error reason.
+- Media download failure triggers retry workflow.
+
+--------------------------------------------------
+
+FR-004 CHRONOLOGICAL REPLAY
+
+Description:
+System shall reproduce any selected day exactly as it occurred after bot installation.
+
+Features:
+- Full timeline replay.
+- Original ordering.
+- Original timestamps.
+- Sender display names.
+- Message type labels.
+- Media rendering.
+- Link rendering.
+- Sticker rendering or metadata display.
+- Export to TXT, HTML, PDF, CSV, and JSON.
+
+Example:
+
+09:02 John: Hello everyone
+09:03 Sarah: [Image] image_001.jpg
+09:05 Mike: https://example.com
+09:07 Amy: [Sticker] packageId=123 stickerId=456
+09:12 Professor: Please submit assignment by Sunday 18:00.
+
+Acceptance Criteria:
+- Replay matches stored chronological order.
+- All available media and links are accessible.
+- User can filter by group and date.
+- Export output remains readable and complete.
+
+--------------------------------------------------
+
+FR-005 USER ATTRIBUTION
+
+Description:
+System shall identify who contributed what.
+
+Features:
+- Message ownership.
+- Media ownership.
+- Link ownership.
+- File ownership.
+- Participation statistics.
+- Display name history.
+- Profile image history if available.
+- First seen and last seen timestamp.
+
+Acceptance Criteria:
+- Every message has a user ID.
+- Display names are resolved where API allows.
+- Unknown users are handled gracefully.
+- Name changes do not break historical attribution.
+
+--------------------------------------------------
+
+FR-006 SEARCH ENGINE
+
+Description:
+Users shall search historical records.
+
+Search Types:
+- Keyword search
+- Person search
+- Date search
+- Topic search
+- File search
+- URL search
+- Media search
+- Assignment search
+- Decision search
+- Semantic search
+
+Example Queries:
+- Who shared the AI article?
+- Show all messages from Professor X.
+- Find discussions about Strategy Assignment.
+- What did people say about the group project?
+- Show all images from May 12.
+- Find all deadlines mentioned this week.
+- What was decided about dinner after class?
+
+Acceptance Criteria:
+- Keyword search returns results within 5 seconds.
+- Date/person filters work together.
+- Semantic search returns relevant context, not only exact matches.
+- Search results include original message links and media references.
+
+--------------------------------------------------
+
+FR-007 DAILY ARCHIVE GENERATION
+
+Description:
+System shall generate a daily archive for each monitored group.
+
+Outputs:
+- messages.jsonl
+- messages.csv
+- messages.txt
+- messages.html
+- links.csv
+- media index
+- daily summary
+- action item list
+- decision log
+- topic map
+- swimlane view
+
+Acceptance Criteria:
+- Archive is generated automatically every day.
+- Failed generation is retried.
+- Admin receives alert if archive generation fails.
+
+--------------------------------------------------
+
+FR-008 ADMIN DASHBOARD
+
+Description:
+System shall provide an admin dashboard.
+
+Features:
+- Manage groups.
+- View ingestion status.
+- View failed events.
+- Retry media downloads.
+- Manage users and roles.
+- Configure retention policy.
+- Configure AI summary schedule.
+- Export data.
+- View audit logs.
+
+Acceptance Criteria:
+- Admin can see system health.
+- Admin can export data by group and date.
+- Admin can disable archiving for a group.
+
+--------------------------------------------------
+
+FR-009 USER DASHBOARD
+
+Description:
+System shall provide a user-facing dashboard.
+
+Features:
+- Search conversations.
+- Replay daily timeline.
+- View shared files.
+- View shared links.
+- Ask AI questions.
+- View topics.
+- View action items.
+- View decisions.
+- Export permitted data.
+
+Acceptance Criteria:
+- User can access only authorized groups.
+- Search is intuitive and responsive.
+- AI answer includes source references.
+
+--------------------------------------------------
+
+FR-010 EXPORT
+
+Description:
+System shall support multiple export formats.
+
+Formats:
+- TXT
+- CSV
+- JSON
+- JSONL
+- HTML
+- PDF
+- DOCX
+
+Acceptance Criteria:
+- Export preserves chronology.
+- Export includes media references.
+- Export can be filtered by date, user, topic, or group.
+- Export job status is visible.
+
+======================================================================
+5. AI INTELLIGENCE REQUIREMENTS
+======================================================================
+
+AI-001 CONVERSATION RECONSTRUCTION
+
+Problem:
+Group chats contain overlapping discussions where many people talk about different topics at the same time.
+
+Requirement:
+AI shall reconstruct independent conversation threads.
+
+Example:
+
+Thread A:
+Assignment discussion
+
+Thread B:
+Dinner arrangement
+
+Thread C:
+Class scheduling
+
+System shall separate and visualize them independently.
+
+Output:
+- Thread title
+- Participants
+- Start time
+- End time
+- Messages included
+- Summary
+- Decisions
+- Action items
+
+Acceptance Criteria:
+- AI separates at least 3 simultaneous conversation topics with reasonable accuracy.
+- User can click from AI thread view back to original timeline.
+
+--------------------------------------------------
+
+AI-002 SWIMLANE VISUALIZATION
+
+Description:
+Generate participant-based interaction maps.
+
+Example:
+
+Professor
+├─ Student A
+│  └─ Response
+├─ Student B
+│  └─ Follow-up
+└─ Student C
+   └─ Question
+
+Alternative Format:
+
+Time        Person A        Person B        Professor        Topic
+09:00       asks question                                   Assignment
+09:02                       replies                         Assignment
+09:05                                      confirms deadline Assignment
+
+Acceptance Criteria:
+- Swimlane view shows conversation flow by person.
+- AI explains which messages belong together.
+- User can toggle between timeline and swimlane.
+
+--------------------------------------------------
+
+AI-003 TOPIC DETECTION
+
+System shall identify:
+- Emerging topics
+- Topic evolution
+- Topic ownership
+- Topic popularity
+- Topic duration
+- Topic participants
+- Topic sentiment
+- Related files and links
+
+Acceptance Criteria:
+- Daily topics are generated automatically.
+- Each topic links back to source messages.
+- User can merge, rename, or correct topics.
+
+--------------------------------------------------
+
+AI-004 DAILY EXECUTIVE SUMMARY
+
+Generate:
+
+Key Topics:
+- Topic A
+- Topic B
+- Topic C
+
+Decisions:
+- Decision 1
+- Decision 2
+
+Action Items:
+- Owner
+- Due date
+- Description
+- Source message
+- Status
+
+Risks:
+- Unresolved issues
+- Conflicting information
+- Escalations
+
+Shared Assets:
+- Links
+- Images
+- Files
+- Videos
+- Audio
+
+Acceptance Criteria:
+- Daily summary is generated once per day.
+- Summary includes source references.
+- Summary is editable by admin.
+
+--------------------------------------------------
+
+AI-005 KNOWLEDGE GRAPH
+
+Generate relationship maps.
+
+Entities:
+- People
+- Topics
+- Files
+- URLs
+- Projects
+- Decisions
+- Assignments
+- Deadlines
+- Events
+- Professors
+- Classes
+
+Relationships:
+- Mentioned
+- Shared
+- Replied to
+- Referenced
+- Assigned to
+- Decided by
+- Related to
+- Followed up by
+
+Acceptance Criteria:
+- Knowledge graph can answer who, what, when, and how questions.
+- Graph supports entity search and relationship view.
+
+--------------------------------------------------
+
+AI-006 PARTICIPANT INTELLIGENCE
+
+Generate insights:
+- Most active contributors
+- Most referenced individuals
+- Subject matter experts
+- Frequently discussed topics
+- People who often answer questions
+- People who often share useful files
+- People connected to specific industries or expertise areas
+
+Acceptance Criteria:
+- Insights are generated weekly and monthly.
+- Sensitive profiling can be disabled.
+- User privacy settings are respected.
+
+--------------------------------------------------
+
+AI-007 ASSIGNMENT DETECTION
+
+Detect:
+- Homework
+- Assignments
+- Deadlines
+- Group projects
+- Submission instructions
+- Presentation requirements
+- Exam schedules
+
+Extract:
+- Owner
+- Due date
+- Description
+- Class
+- Professor
+- Submission channel
+- Source message
+
+Acceptance Criteria:
+- Assignment dashboard shows active assignments.
+- User can mark assignment as completed.
+- AI detects likely deadlines even when phrased informally.
+
+--------------------------------------------------
+
+AI-008 DECISION TRACKING
+
+Detect phrases and contexts such as:
+- "Let's proceed."
+- "Approved."
+- "Final version."
+- "We will submit this one."
+- "Confirmed."
+- "Agreed."
+
+Store:
+- Decision
+- Decision maker
+- Date
+- Related topic
+- Source message
+- Confidence score
+
+Acceptance Criteria:
+- Decision log is searchable.
+- Each decision links to original messages.
+- Admin can confirm or reject AI-detected decisions.
+
+--------------------------------------------------
+
+AI-009 ACTION ITEM TRACKING
+
+Extract:
+- Owner
+- Task
+- Due date
+- Status
+- Source message
+- Related topic
+
+Example:
+"I'll send the slides tomorrow."
+
+Output:
+Owner: Speaker
+Task: Send the slides
+Due Date: Tomorrow
+Status: Open
+
+Acceptance Criteria:
+- Action items are listed daily.
+- AI identifies owners and due dates.
+- User can edit, assign, close, or dismiss action items.
+
+--------------------------------------------------
+
+AI-010 MEETING MINUTES GENERATOR
+
+Automatically generate:
+- Discussion summary
+- Decisions
+- Action items
+- Risks
+- Open issues
+- Important files
+- Important links
+- People mentioned
+- Next steps
+
+Acceptance Criteria:
+- User can generate minutes for any date range or topic.
+- Minutes can be exported to DOCX, PDF, TXT, or email.
+
+--------------------------------------------------
+
+AI-011 COMMUNITY INTELLIGENCE
+
+Identify:
+- Most influential members
+- Most active members
+- Experts by topic
+- Emerging leaders
+- Networking opportunities
+- Collaboration clusters
+
+Acceptance Criteria:
+- Insights are transparent and explainable.
+- Sensitive analysis can be disabled.
+- Reports avoid harmful or unfair ranking by default.
+
+======================================================================
+6. STORAGE REQUIREMENTS
+======================================================================
+
+Retention:
+- Default permanent retention.
+- Configurable retention policy by group.
+- No automatic deletion unless configured.
+- Legal hold support for enterprise use.
+
+Storage Layers:
+
+Raw Archive:
+- Immutable source records.
+- Raw webhook payloads.
+- Original metadata.
+- Original timestamp.
+
+Processed Archive:
+- Cleaned text.
+- Extracted links.
+- Media metadata.
+- OCR output.
+- Transcripts.
+- AI summaries.
+- Topics.
+- Action items.
+- Decisions.
+
+Search Index:
+- Keyword index.
+- Full-text index.
+- Vector index.
+- Metadata filters.
+
+Object Storage:
+- Images.
+- Videos.
+- Audio.
+- Files.
+- Exports.
+- Daily reports.
+
+Recommended Folder Structure:
+
+/archive
+  /line
+    /{group_id}
+      /{yyyy}
+        /{mm}
+          /{dd}
+            messages.jsonl
+            messages.csv
+            messages.txt
+            replay.html
+            summary.md
+            links.csv
+            action_items.csv
+            decisions.csv
+            /images
+            /videos
+            /audio
+            /files
+            /stickers
+
+======================================================================
+7. SECURITY REQUIREMENTS
+======================================================================
+
+Authentication:
+- Google OAuth for MVP.
+- SSO/SAML/OIDC for enterprise.
+- MFA for admin users.
+- Session timeout.
+- Device/session management.
+
+Authorization:
+Roles:
+- Super Administrator
+- Organization Administrator
+- Group Owner
+- Group Member
+- Read Only User
+- Auditor
+- AI Analyst
+
+Permissions:
+- View messages
+- View media
+- Export data
+- Manage group
+- Manage users
+- Configure retention
+- Run AI analysis
+- Delete data
+- View audit logs
+
+Encryption:
+- TLS 1.3 in transit.
+- AES-256 at rest.
+- Encrypted secrets.
+- Encrypted backups.
+- Signed URLs for media access.
+
+Security Controls:
+- Webhook signature verification.
+- Rate limiting.
+- IP allowlisting for admin console where needed.
+- Secret rotation.
+- Principle of least privilege.
+- Audit logging.
+- Data access monitoring.
+- Media access expiry links.
+- Bot token protection.
+
+======================================================================
+8. COMPLIANCE REQUIREMENTS
+======================================================================
+
+PDPA Requirements:
+- User consent management.
+- Clear group notice before activation.
+- Data access requests.
+- Data deletion requests.
+- Data correction requests.
+- Purpose limitation.
+- Data retention policy.
+- Data processor agreement if third-party vendors are used.
+- Data breach notification process.
+- Audit logging.
+
+Recommended Group Notice:
+
+Hi everyone, I’m adding an archive bot to help the group keep track of shared links, files, images, decisions, assignments, and action items.
+
+The bot will store messages and media shared in this group from now onward, organize them by date, and generate summaries/searchable records.
+
+Please let me know if anyone is uncomfortable before we enable it.
+
+Audit Trail:
+Track:
+- Data access.
+- Searches.
+- Exports.
+- Downloads.
+- Login events.
+- Permission changes.
+- AI analysis runs.
+- Administrative actions.
+- Data deletion events.
+
+Data Subject Rights:
+- View personal data.
+- Request export.
+- Request correction.
+- Request deletion where legally allowed.
+- Opt-out handling where feasible.
+
+======================================================================
+9. REPORTING REQUIREMENTS
+======================================================================
+
+Daily Report:
+Generated every day.
+
+Includes:
+- Executive summary.
+- Main topics.
+- Decisions.
+- Action items.
+- Shared files.
+- Shared links.
+- Participant activity.
+- Assignment and deadline alerts.
+- Open questions.
+- Important media.
+- AI confidence notes.
+
+Weekly Report:
+Includes:
+- Topic trends.
+- Participation trends.
+- Knowledge growth.
+- Top shared resources.
+- Action item status.
+- Upcoming deadlines.
+- Important unresolved issues.
+
+Monthly Report:
+Includes:
+- Community insights.
+- Engagement analytics.
+- Knowledge repository growth.
+- Most discussed topics.
+- Key decisions.
+- Network graph.
+- Expert map.
+- Learning themes.
+
+Export Requirements:
+- TXT
+- PDF
+- DOCX
+- CSV
+- HTML
+- JSON
+- JSONL
+
+======================================================================
+10. SCALABILITY REQUIREMENTS
+======================================================================
+
+Initial Target:
+- 50 groups.
+- 5,000 users.
+- 1 million messages.
+- 100 GB media storage.
+
+Growth Target:
+- 500 groups.
+- 50,000 users.
+- 100 million messages.
+- 10 TB media storage.
+
+Future Target:
+- 1,000 groups.
+- 100,000 users.
+- 500 million messages.
+- 100 TB+ media storage.
+
+Performance Requirements:
+- Webhook response under 1 second.
+- Search results under 5 seconds.
+- AI summary generated within 15 minutes after daily cutoff for MVP.
+- Media download queue processed within 10 minutes for normal load.
+- Dashboard page load under 3 seconds for common views.
+
+======================================================================
+11. AVAILABILITY REQUIREMENTS
+======================================================================
+
+Uptime:
+- MVP: 99.5%
+- Production: 99.9%
+- Enterprise: 99.95%+
+
+Backup:
+- Hourly incremental backup.
+- Daily full backup.
+- Weekly archive backup.
+- Object storage versioning.
+
+Disaster Recovery:
+- MVP RPO: 1 hour.
+- MVP RTO: 4 hours.
+- Production RPO: 15 minutes.
+- Production RTO: 1 hour.
+- Enterprise RPO: 5 minutes.
+- Enterprise RTO: 30 minutes.
+
+Monitoring:
+- Webhook health.
+- Queue depth.
+- Failed event count.
+- Failed media download count.
+- AI job status.
+- Storage usage.
+- Database performance.
+- API latency.
+- Error rate.
+
+======================================================================
+12. FUTURE ROADMAP
+======================================================================
+
+Phase 1:
+- LINE integration.
+- Message capture.
+- Media storage.
+- Daily replay.
+- Basic search.
+
+Phase 2:
+- AI summaries.
+- Topic clustering.
+- Daily reports.
+- Link/file library.
+- Assignment detection.
+
+Phase 3:
+- Swimlanes.
+- Knowledge graph.
+- AI assistant.
+- Action item tracker.
+- Decision tracker.
+
+Phase 4:
+- Multi-platform support.
+
+Platforms:
+- LINE
+- WhatsApp
+- Telegram
+- Discord
+- Slack
+- Microsoft Teams
+
+Phase 5:
+- Enterprise governance.
+- Advanced analytics.
+- Mobile app.
+- Organization-wide deployment.
+- API marketplace.
+
+======================================================================
+13. TECHNICAL ARCHITECTURE
+======================================================================
+
+Source Layer:
+- LINE Messaging API
+- LINE webhook events
+- Group message events
+- Media message content API
+
+Ingestion Layer:
+- Webhook Service
+- Signature verification
+- Event normalization
+- Duplicate detection
+- Queue publishing
+
+Storage Layer:
+- PostgreSQL for metadata and structured records
+- Object Storage for media and exports
+- Vector store for embeddings
+- Search index for text and metadata
+
+Processing Layer:
+- Media downloader
+- URL extractor
+- OCR processor
+- Transcription processor
+- AI summary pipeline
+- Topic clustering pipeline
+- Action item extraction pipeline
+- Decision extraction pipeline
+
+Analytics Layer:
+- Search Engine
+- Knowledge Graph
+- Reporting Engine
+- Dashboard API
+- AI Q&A Engine
+
+Presentation Layer:
+- Web Dashboard
+- Mobile Dashboard
+- Admin Console
+- Reports
+- Export Center
+
+======================================================================
+14. DEFINITION OF SUCCESS
+======================================================================
+
+The platform successfully becomes the permanent memory, searchable knowledge base, and AI intelligence layer for group communications.
+
+It enables users to:
+- Reconstruct any conversation.
+- Understand complex discussion flows.
+- Locate critical information instantly.
+- Preserve institutional knowledge indefinitely.
+- Detect assignments, deadlines, and decisions.
+- Summarize group activity automatically.
+- Ask AI questions over historical conversations.
+- Build a richer knowledge layer above normal group chat.
+
+======================================================================
+15. RECOMMENDED TECHNOLOGY STACK
+======================================================================
+
+Option A: Startup / Personal Project / MVP
+
+Frontend:
+- Next.js
+- React
+- TypeScript
+- TailwindCSS
+- ShadCN UI
+
+Backend:
+- FastAPI (Python)
+- Pydantic
+- SQLAlchemy
+- Alembic for database migrations
+
+Database:
+- PostgreSQL
+
+Search:
+- PostgreSQL Full Text Search
+
+Vector Database:
+- pgvector
+
+Storage:
+- Google Drive for simple personal archive
+- Google Cloud Storage for scalable storage
+
+Authentication:
+- Google OAuth
+
+Hosting:
+- Railway
+- Render
+- Google Cloud Run
+
+AI:
+- OpenAI GPT-5.5 or latest reasoning-capable model
+- Embedding model for semantic search
+- Whisper-style transcription for audio if required
+- Vision/OCR model for screenshots and images if required
+
+Advantages:
+- Lowest cost.
+- Fastest development.
+- Easy maintenance.
+- Good enough for EMBA group MVP.
+- Simple deployment.
+
+Recommended For:
+- Personal use.
+- Single EMBA cohort.
+- Prototype.
+- Investor demo.
+- Small community.
+
+--------------------------------------------------
+
+Option B: Production / Growth Stage
+
+Frontend:
+- Next.js
+- TypeScript
+- TailwindCSS
+- Component library such as ShadCN UI or MUI
+
+Backend:
+- FastAPI
+- Background workers using Celery, RQ, or Dramatiq
+- REST API and optional GraphQL API
+
+Database:
+- PostgreSQL managed service
+- Read replica for analytics
+- pgvector
+
+Search Engine:
+- OpenSearch or Elasticsearch
+
+Queue:
+- Redis Queue
+- Cloud Tasks
+- Pub/Sub
+- RabbitMQ
+
+Storage:
+- Google Cloud Storage or AWS S3
+
+Cache:
+- Redis
+
+AI Layer:
+- OpenAI
+- Anthropic
+- Gemini
+- Optional model router
+
+Hosting:
+- Google Cloud Run
+- Google Kubernetes Engine
+- AWS ECS
+- AWS EKS
+
+Monitoring:
+- Grafana
+- Prometheus
+- Sentry
+- Cloud Logging
+
+Advantages:
+- Scalable.
+- Production-ready.
+- Modular.
+- Supports more groups and users.
+
+Recommended For:
+- Commercial SaaS.
+- Multiple cohorts.
+- Corporate pilot.
+- Paid product.
+
+--------------------------------------------------
+
+Option C: Enterprise Production
+
+Frontend:
+- Next.js
+- TypeScript
+- Enterprise design system
+
+Backend:
+- FastAPI microservices
+- Event-driven architecture
+- API gateway
+
+Database:
+- PostgreSQL HA cluster
+- Partitioned message tables
+- Read replicas
+- Data warehouse integration
+
+Vector Database:
+- PostgreSQL + pgvector
+or
+- Pinecone
+or
+- Weaviate
+or
+- OpenSearch Vector Search
+
+Search Engine:
+- OpenSearch
+or
+- Elasticsearch
+
+Storage:
+- AWS S3
+or
+- Google Cloud Storage
+with lifecycle policies and versioning
+
+Queue / Streaming:
+- Kafka
+or
+- Google Pub/Sub
+or
+- AWS Kinesis
+
+Cache:
+- Redis Cluster
+
+AI Layer:
+- OpenAI
+- Anthropic
+- Gemini
+- Local/private LLM option for sensitive enterprise use
+
+Hosting:
+- AWS EKS
+or
+- Google GKE
+or
+- Azure AKS
+
+Monitoring:
+- Grafana
+- Prometheus
+- ELK Stack
+- OpenTelemetry
+- Sentry
+
+Security:
+- SSO/SAML/OIDC
+- KMS-managed encryption keys
+- Secret Manager
+- WAF
+- IAM
+- VPC isolation
+- Audit log export
+
+Advantages:
+- Enterprise scalability.
+- High availability.
+- Multi-region support.
+- Strong governance.
+- Compliance readiness.
+
+Recommended For:
+- Large enterprises.
+- Regulated environments.
+- Multi-country deployments.
+- High-volume communities.
+
+======================================================================
+16. SYSTEM ARCHITECTURE
+======================================================================
+
+High-Level Architecture:
+
+LINE Group
+     |
+     V
+LINE Messaging API
+     |
+     V
+Webhook Gateway
+     |
+     +----------------------+
+     |                      |
+     V                      V
+Message Queue           Real-Time Processor
+     |                      |
+     V                      V
+Archive Service      AI Intelligence Service
+     |                      |
+     +-----------+----------+
+                 |
+                 V
+            PostgreSQL
+                 |
+                 V
+             pgVector
+                 |
+                 V
+            Object Storage
+                 |
+                 V
+         Search & Analytics
+                 |
+                 V
+           Web Dashboard
+
+Detailed Flow:
+
+1. LINE sends webhook event to webhook gateway.
+2. Webhook gateway verifies signature.
+3. Raw event is stored immediately.
+4. Event is normalized.
+5. Message metadata is written to PostgreSQL.
+6. Media events are pushed to media download queue.
+7. Text content is indexed for search.
+8. Embeddings are generated asynchronously.
+9. AI pipeline processes summaries, topics, decisions, and action items.
+10. Dashboard displays replay, search, reports, and AI insights.
+
+======================================================================
+17. AI / LLM ARCHITECTURE
+======================================================================
+
+Layer 1: Raw Storage
+
+Store:
+- Messages
+- Images
+- Videos
+- Files
+- Links
+- Metadata
+- Raw webhook JSON
+
+Layer 2: Preprocessing
+
+Process:
+- Text cleaning
+- URL extraction
+- Language detection
+- OCR
+- Audio transcription
+- Media metadata extraction
+- User profile enrichment
+- Timestamp normalization
+
+Layer 3: AI Processing
+
+Generate:
+- Summaries
+- Topics
+- Entities
+- Relationships
+- Action items
+- Decisions
+- Risks
+- Open questions
+- Assignments
+- Deadlines
+
+Layer 4: Embeddings
+
+Create vector embeddings for:
+- Messages
+- Topics
+- Documents
+- OCR text
+- Audio transcripts
+- Summaries
+- Decisions
+- Action items
+
+Layer 5: Knowledge Graph
+
+Nodes:
+- People
+- Groups
+- Topics
+- Documents
+- Decisions
+- Assignments
+- Deadlines
+- Events
+- Links
+- Classes
+- Professors
+
+Relationships:
+- Mentioned
+- Shared
+- Replied
+- Referenced
+- Assigned
+- Decided
+- Discussed
+- Followed up
+- Belongs to
+
+Layer 6: AI Assistant
+
+Example Questions:
+- What did Professor Somchai say about Assignment 3?
+- Show all discussions related to Strategy Class.
+- Who shared the presentation deck?
+- Summarize last week's important decisions.
+- What do I need to do this week?
+- Which links were shared about finance?
+- What was the final decision about the group project?
+
+AI Output Requirements:
+- Must cite source messages.
+- Must identify uncertainty.
+- Must avoid hallucination.
+- Must distinguish facts from AI inference.
+- Must provide chronological references where needed.
+- Must allow user feedback and correction.
+
+======================================================================
+18. ADVANCED AI FEATURES
+======================================================================
+
+AI-012 Semantic Q&A
+
+Description:
+Users can ask natural language questions over archived group conversations.
+
+Example:
+"What did we decide about the Saturday class dinner?"
+
+Expected Output:
+- Direct answer
+- Supporting messages
+- People involved
+- Related files or links
+- Confidence level
+
+--------------------------------------------------
+
+AI-013 Timeline Summarization
+
+Description:
+Generate a summary across any date range.
+
+Example:
+"Summarize everything important from June 1 to June 7."
+
+Output:
+- Major topics
+- Key decisions
+- Action items
+- Deadlines
+- Shared files
+- People involved
+
+--------------------------------------------------
+
+AI-014 Confusion Resolver
+
+Description:
+AI explains confusing overlapping chat segments.
+
+Example:
+"There were three conversations happening at the same time:
+1. Assignment deadline
+2. Dinner booking
+3. Carpool arrangement"
+
+--------------------------------------------------
+
+AI-015 Follow-Up Reminder
+
+Description:
+AI detects unresolved questions and pending commitments.
+
+Examples:
+- "No one answered Mint's question about the deadline."
+- "Bank said he would upload the slides tomorrow, but no file was detected."
+
+--------------------------------------------------
+
+AI-016 Class / Subject Tagging
+
+Description:
+Automatically tag conversations by class or subject.
+
+Examples:
+- Strategy
+- Finance
+- Marketing
+- Leadership
+- Operations
+- Entrepreneurship
+
+--------------------------------------------------
+
+AI-017 File Intelligence
+
+Description:
+AI summarizes files shared in the group.
+
+Supported:
+- PDF
+- DOCX
+- PPTX
+- XLSX
+- Images with text
+- Screenshots
+
+Output:
+- File summary
+- Key points
+- Related conversation
+- Sender
+- Date shared
+
+======================================================================
+19. MEDIA PROCESSING
+======================================================================
+
+Images
+
+Capabilities:
+- OCR
+- Screenshot analysis
+- Object detection
+- Optional face detection
+- Image classification
+- Duplicate detection
+- Thumbnail generation
+
+Videos
+
+Capabilities:
+- Thumbnail generation
+- Speech transcription
+- Scene extraction
+- Video metadata extraction
+- File size optimization
+- Preview generation
+
+Voice Messages / Audio
+
+Capabilities:
+- Speech-to-text
+- Speaker identification if possible
+- Sentiment analysis
+- Language detection
+- Transcript indexing
+
+Documents
+
+Capabilities:
+- PDF extraction
+- DOCX extraction
+- PPTX extraction
+- XLSX metadata extraction
+- OCR for scanned PDFs
+- Semantic indexing
+- Summary generation
+
+Links
+
+Capabilities:
+- URL extraction
+- Domain extraction
+- Page title extraction
+- Description extraction
+- Screenshot preview if needed
+- Link categorization
+
+Stickers
+
+Capabilities:
+- Store sticker package ID.
+- Store sticker ID.
+- Store sticker keywords if available.
+- Render sticker reference in replay.
+- Optional sticker image mapping if available.
+
+======================================================================
+20. DATA MODEL
+======================================================================
+
+Table: groups
+
+Fields:
+- group_id
+- group_name
+- platform
+- created_at
+- updated_at
+- status
+- archive_enabled
+- retention_policy
+- owner_user_id
+
+--------------------------------------------------
+
+Table: users
+
+Fields:
+- user_id
+- platform_user_id
+- display_name
+- profile_image_url
+- first_seen_at
+- last_seen_at
+- status
+- metadata
+
+--------------------------------------------------
+
+Table: group_members
+
+Fields:
+- group_id
+- user_id
+- role
+- joined_at
+- left_at
+- status
+
+--------------------------------------------------
+
+Table: messages
+
+Fields:
+- id
+- platform
+- group_id
+- user_id
+- line_message_id
+- event_id
+- timestamp
+- message_type
+- text_content
+- raw_event_json
+- normalized_json
+- reply_to_message_id
+- is_unsent
+- processing_status
+- created_at
+- updated_at
+
+--------------------------------------------------
+
+Table: media_assets
+
+Fields:
+- media_id
+- message_id
+- group_id
+- user_id
+- media_type
+- original_filename
+- storage_url
+- storage_provider
+- file_size
+- mime_type
+- checksum
+- download_status
+- thumbnail_url
+- created_at
+
+--------------------------------------------------
+
+Table: links
+
+Fields:
+- link_id
+- message_id
+- group_id
+- user_id
+- url
+- domain
+- title
+- description
+- preview_image
+- created_at
+
+--------------------------------------------------
+
+Table: topics
+
+Fields:
+- topic_id
+- group_id
+- name
+- description
+- confidence
+- start_time
+- end_time
+- created_at
+
+--------------------------------------------------
+
+Table: message_topics
+
+Fields:
+- message_id
+- topic_id
+- confidence
+
+--------------------------------------------------
+
+Table: action_items
+
+Fields:
+- action_id
+- group_id
+- source_message_id
+- owner_user_id
+- description
+- due_date
+- status
+- confidence
+- created_at
+- updated_at
+
+--------------------------------------------------
+
+Table: decisions
+
+Fields:
+- decision_id
+- group_id
+- source_message_id
+- decision_text
+- decision_maker_user_id
+- topic_id
+- confidence
+- timestamp
+- created_at
+
+--------------------------------------------------
+
+Table: summaries
+
+Fields:
+- summary_id
+- group_id
+- summary_type
+- date_from
+- date_to
+- summary_text
+- model_used
+- source_message_ids
+- created_at
+
+--------------------------------------------------
+
+Table: embeddings
+
+Fields:
+- embedding_id
+- object_type
+- object_id
+- embedding_vector
+- model
+- created_at
+
+--------------------------------------------------
+
+Table: audit_logs
+
+Fields:
+- audit_id
+- actor_user_id
+- action
+- object_type
+- object_id
+- timestamp
+- ip_address
+- user_agent
+- metadata
+
+======================================================================
+21. DASHBOARD REQUIREMENTS
+======================================================================
+
+Executive Dashboard
+
+Widgets:
+- Daily activity
+- Top topics
+- Active members
+- Open action items
+- Recent decisions
+- Upcoming deadlines
+- Shared files
+- Shared links
+- AI summary
+- Storage usage
+- System health
+
+--------------------------------------------------
+
+Conversation Explorer
+
+Capabilities:
+- Replay day.
+- Replay week.
+- Replay topic.
+- Filter by person.
+- Filter by message type.
+- Filter by media type.
+- Jump to source message.
+- Export selected range.
+
+--------------------------------------------------
+
+Knowledge Explorer
+
+Capabilities:
+- Semantic search.
+- AI chat.
+- Topic browser.
+- Decision browser.
+- Assignment browser.
+- File browser.
+- Link browser.
+- Knowledge graph view.
+
+--------------------------------------------------
+
+People Explorer
+
+Capabilities:
+- Participation analytics.
+- Expertise mapping.
+- Network graph.
+- Shared files by person.
+- Topics by person.
+- Action items by person.
+- Decisions by person.
+
+--------------------------------------------------
+
+Admin Console
+
+Capabilities:
+- Group management.
+- User management.
+- Role management.
+- Consent tracking.
+- Retention policy settings.
+- Export management.
+- AI model settings.
+- API key management.
+- Audit log review.
+- Failed job retry.
+- Storage monitoring.
+
+======================================================================
+22. SECURITY & PRIVACY ENHANCEMENTS
+======================================================================
+
+Data Classification:
+- Public
+- Internal
+- Confidential
+- Restricted
+
+PII Protection:
+Mask or detect:
+- Phone numbers
+- Email addresses
+- National IDs
+- Passport numbers
+- Financial information
+- Addresses
+- Sensitive personal information
+
+Privacy Controls:
+- Disable AI analysis for selected groups.
+- Disable participant ranking.
+- Disable sentiment analysis.
+- Disable face detection.
+- Disable permanent retention.
+- Allow user-level redaction.
+- Allow admin approval before sharing reports.
+
+Audit Logging:
+Track:
+- Every search.
+- Every export.
+- Every download.
+- Every login.
+- Every permission change.
+- Every AI query.
+- Every data deletion.
+- Every media access.
+
+Access Control:
+- Role-based permissions.
+- Group-based permissions.
+- Time-limited media links.
+- Admin approval for bulk exports.
+- Watermark exports if needed.
+
+======================================================================
+23. COST ESTIMATE
+======================================================================
+
+MVP
+
+Users:
+100
+
+Messages:
+100,000/month
+
+Media:
+10-50 GB/month
+
+Estimated Cost:
+USD 20-100/month
+
+Typical Components:
+- Cloud Run or Railway hosting
+- PostgreSQL small instance
+- Google Drive or Cloud Storage
+- OpenAI API usage
+- Basic monitoring
+
+--------------------------------------------------
+
+Growth Stage
+
+Users:
+5,000
+
+Messages:
+10 million/month
+
+Media:
+1-5 TB/month
+
+Estimated Cost:
+USD 300-1,500/month
+
+Typical Components:
+- Managed PostgreSQL
+- Object storage
+- Redis queue
+- OpenSearch optional
+- AI usage optimization
+- Monitoring and logging
+
+--------------------------------------------------
+
+Enterprise
+
+Users:
+100,000+
+
+Messages:
+500 million+
+
+Media:
+100 TB+
+
+Estimated Cost:
+USD 10,000+/month
+
+Typical Components:
+- Kubernetes
+- HA PostgreSQL
+- OpenSearch / Elasticsearch
+- Kafka / Pub/Sub
+- Object storage at scale
+- Enterprise monitoring
+- Security tooling
+- Dedicated AI model routing
+
+Cost Optimization Strategies:
+- Store raw media in low-cost object storage.
+- Generate embeddings only for meaningful text.
+- Batch AI processing.
+- Cache repeated AI answers.
+- Use cheaper models for simple classification.
+- Use premium models only for deep reasoning.
+- Apply lifecycle policies to older media.
+- Compress thumbnails and previews.
+- Separate hot, warm, and cold storage.
+
+======================================================================
+24. IMPLEMENTATION ROADMAP
+======================================================================
+
+Phase 1: MVP Foundation
+
+Estimated Duration:
+4 weeks
+
+Deliverables:
+- LINE Official Account setup.
+- Webhook service.
+- Signature verification.
+- Message capture.
+- Text storage.
+- Sticker metadata storage.
+- Link extraction.
+- Basic media download.
+- PostgreSQL schema.
+- Daily TXT/CSV/JSON export.
+- Simple dashboard.
+- Basic search.
+
+Success Criteria:
+- Bot joins group and captures messages.
+- Daily archive can be downloaded.
+- Media is stored and linked.
+- Messages can be searched by date/person/keyword.
+
+--------------------------------------------------
+
+Phase 2: AI Summary and Search
+
+Estimated Duration:
+4 weeks
+
+Deliverables:
+- Daily AI summary.
+- Topic detection.
+- Action item extraction.
+- Decision extraction.
+- Semantic search.
+- Embeddings.
+- AI Q&A over archive.
+- Shared file and link library.
+
+Success Criteria:
+- Daily summary generated automatically.
+- User can ask natural language questions.
+- AI answers cite source messages.
+
+--------------------------------------------------
+
+Phase 3: Advanced Intelligence
+
+Estimated Duration:
+6 weeks
+
+Deliverables:
+- Swimlane visualization.
+- Thread reconstruction.
+- Knowledge graph.
+- Assignment command center.
+- Professor knowledge base.
+- Community relationship graph.
+- Weekly and monthly reports.
+
+Success Criteria:
+- Confusing overlapping conversations are separated.
+- Assignments and deadlines are detected.
+- Knowledge graph shows people-topic-file relationships.
+
+--------------------------------------------------
+
+Phase 4: Production Hardening
+
+Estimated Duration:
+8 weeks
+
+Deliverables:
+- Role-based access control.
+- Audit logging.
+- Admin dashboard.
+- Retry jobs.
+- Monitoring and alerting.
+- Backup and restore.
+- Export management.
+- Consent tracking.
+- PDPA workflows.
+
+Success Criteria:
+- System is stable under production usage.
+- Admin can manage users, groups, exports, and data policies.
+- Audit logs are complete.
+
+--------------------------------------------------
+
+Phase 5: Multi-Platform Expansion
+
+Estimated Duration:
+8-12 weeks
+
+Deliverables:
+- Slack connector.
+- Discord connector.
+- Microsoft Teams connector.
+- Telegram connector.
+- WhatsApp connector if API access allows.
+- Unified group knowledge dashboard.
+
+Success Criteria:
+- Multiple platforms feed into one knowledge system.
+- Search and AI work across platforms.
+
+======================================================================
+25. FUTURE VISION
+======================================================================
+
+The platform should transform group chats from temporary, messy, fast-moving conversations into a permanent, searchable, AI-powered organizational memory system.
+
+The platform should function as a "Second Brain" for communities, organizations, educational programs, and enterprises.
+
+Long-term vision:
+- Every important group conversation becomes searchable knowledge.
+- Every decision is automatically captured.
+- Every assignment and deadline is tracked.
+- Every useful file and link is preserved.
+- Every member can ask AI what happened and get accurate answers.
+- Communities become easier to manage, remember, and learn from.
+
+======================================================================
+26. EMBA-SPECIFIC KILLER FEATURES
+======================================================================
+
+26.1 Professor Knowledge Base
+
+Description:
+Automatically build profiles of each professor and instructor.
+
+Capture:
+- Professor name.
+- Subject taught.
+- Frameworks mentioned.
+- Common advice.
+- Assignment instructions.
+- Recommended readings.
+- Important quotes.
+- Files shared by or about professor.
+- Student questions and professor answers.
+
+Example Questions:
+- What frameworks did Professor Somchai emphasize?
+- What did Ajarn say about the final presentation?
+- Show all advice from the Finance professor.
+
+--------------------------------------------------
+
+26.2 Assignment Command Center
+
+Description:
+Automatically detect and track every assignment, due date, presentation, group work, and submission requirement.
+
+Features:
+- Assignment list.
+- Due dates.
+- Class name.
+- Professor name.
+- Team members.
+- Required files.
+- Submission channel.
+- Status.
+- Reminder.
+- Source message.
+
+Example:
+Assignment: Strategy case analysis
+Due Date: Sunday 18:00
+Owner: Group 3
+Submission: Upload to LMS
+Source: Message from Professor at 09:12
+
+--------------------------------------------------
+
+26.3 EMBA Cohort Relationship Graph
+
+Description:
+Map networking and collaboration within the cohort.
+
+Features:
+- Who interacts with whom.
+- Study groups.
+- Project teams.
+- Industry expertise.
+- Frequent collaborators.
+- Networking opportunities.
+- Topic expertise map.
+
+Example:
+- Bank often answers finance questions.
+- Mint shares marketing materials.
+- Ohm frequently contributes to operations discussions.
+- Auttapong contributes AI and technology topics.
+
+--------------------------------------------------
+
+26.4 What Do I Need To Do This Week?
+
+Description:
+AI generates a personalized weekly task summary.
+
+Output:
+- Assignments due.
+- Group meetings.
+- Files to review.
+- People to follow up with.
+- Pending questions.
+- Important announcements.
+
+--------------------------------------------------
+
+26.5 Missed Chat Catch-Up
+
+Description:
+User can ask:
+"I missed yesterday. What should I know?"
+
+Output:
+- Top 5 important points.
+- Deadlines.
+- Decisions.
+- Shared files.
+- People who asked for help.
+- Any urgent issues.
+
+======================================================================
+27. RISKS, CONSTRAINTS, AND LIMITATIONS
+======================================================================
+
+Platform Limitations:
+- LINE may not provide access to historical messages before the bot joins.
+- Some media may have time-limited download availability.
+- Some user profile data may be unavailable depending on permissions.
+- LINE API rate limits may apply.
+- Some event types may not be supported.
+
+Privacy Risks:
+- Group members may not want permanent archiving.
+- Media may include personal information.
+- AI summaries may expose sensitive information.
+- Participant analytics may feel intrusive.
+
+Technical Risks:
+- Webhook downtime can cause missed events.
+- Media download failure.
+- AI hallucination.
+- Topic clustering errors.
+- Large storage cost.
+- Complex permission model.
+
+Mitigation:
+- Obtain group consent.
+- Verify LINE webhook signature.
+- Store raw events immediately.
+- Use queues and retries.
+- Add AI source citations.
+- Allow admin correction.
+- Apply access control.
+- Use audit logs.
+- Monitor failures.
+- Backup regularly.
+
+======================================================================
+28. ACCEPTANCE CRITERIA
+======================================================================
+
+MVP Acceptance Criteria:
+- Bot can join a LINE group.
+- Bot receives and stores text messages.
+- Bot stores sticker metadata.
+- Bot extracts links.
+- Bot downloads images and videos where supported.
+- Bot creates daily archive by date.
+- User can download TXT/CSV/JSON archive.
+- User can search by date, person, and keyword.
+- Basic AI daily summary is generated.
+
+AI Acceptance Criteria:
+- AI summary cites source messages.
+- AI separates at least major topics.
+- AI detects obvious action items.
+- AI detects obvious deadlines.
+- AI can answer questions based on stored messages.
+- AI clearly says when information is unavailable.
+
+Security Acceptance Criteria:
+- Webhook signature is verified.
+- Admin login is protected.
+- Data access is logged.
+- Exports are permission-controlled.
+- Media links are protected.
+- Secrets are not stored in code.
+
+Compliance Acceptance Criteria:
+- Group consent notice is provided.
+- Data retention policy is documented.
+- Deletion request process exists.
+- Audit logs are available.
+- Admin can disable archiving.
+
+======================================================================
+29. APPENDIX: EXAMPLE OUTPUTS
+======================================================================
+
+29.1 Daily Timeline TXT
+
+2026-06-06 EMBA Group Timeline
+
+09:02 | John | Text
+Hello everyone
+
+09:03 | Sarah | Image
+[Image: images/2026-06-06_0903_sarah_001.jpg]
+
+09:05 | Mike | Link
+https://example.com
+
+09:07 | Amy | Sticker
+Sticker packageId=123 stickerId=456
+
+09:12 | Professor | Text
+Please submit the assignment by Sunday 18:00.
+
+--------------------------------------------------
+
+29.2 Daily AI Summary
+
+Date:
+2026-06-06
+
+Main Topics:
+1. Assignment deadline
+2. Dinner arrangement
+3. Shared reading materials
+
+Key Decisions:
+- Assignment submission deadline confirmed as Sunday 18:00.
+- Dinner location to be finalized tomorrow.
+
+Action Items:
+- Group 3 to prepare slides.
+- Mint to share finance file.
+- Bank to confirm dinner booking.
+
+Shared Links:
+- https://example.com
+
+Shared Files:
+- finance_case.pdf
+- strategy_template.pptx
+
+Open Questions:
+- Who will submit the final group file?
+- Are printed copies required?
+
+--------------------------------------------------
+
+29.3 Swimlane Example
+
+Topic: Assignment Deadline
+
+Time      Professor        Student A        Student B
+09:12     Announces due date
+09:14                      Asks about format
+09:16                                      Asks about submission channel
+09:18     Confirms PDF format and LMS submission
+
+--------------------------------------------------
+
+29.4 Action Item Example
+
+Action Item:
+Prepare final presentation slides
+
+Owner:
+Group 3
+
+Due Date:
+Sunday 18:00
+
+Source:
+Professor message, 2026-06-06 09:12
+
+Status:
+Open
+
+--------------------------------------------------
+
+29.5 AI Q&A Example
+
+User Question:
+What did we decide about the assignment?
+
+AI Answer:
+The group confirmed that the assignment should be submitted by Sunday at 18:00. The expected format is PDF and the submission should be made through LMS. This was confirmed by the professor in the group chat on 2026-06-06 at 09:18.
+
+Sources:
+- 2026-06-06 09:12 Professor
+- 2026-06-06 09:18 Professor
+
+======================================================================
+END OF DOCUMENT
+======================================================================
