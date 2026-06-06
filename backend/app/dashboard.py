@@ -180,9 +180,7 @@ th .col-hint{{font-size:.55rem;opacity:.4;margin-left:2px}}
 th.shrunk{{color:#6366f1;font-size:.7rem}}
 th.shrunk .col-hint{{opacity:1}}''
 td{{padding:.3rem .5rem;border-bottom:1px solid #1e293b}}
-td.shrunk{{padding:0;max-width:0;overflow:hidden;border-bottom-color:transparent}}
-td.shrunk *{{display:none}}
-td.shrunk .type-badge{{display:none}}
+td.shrunk{{display:none}}
 .msg-row{{cursor:pointer;transition:background .15s}}
 .msg-row:hover{{background:rgba(99,102,241,.12)}}
 .msg-row.highlight{{background:rgba(56,189,248,.15);border-left:3px solid #38bdf8}}
@@ -275,7 +273,7 @@ td.shrunk .type-badge{{display:none}}
 
 <div id="main">
 <table>
-<thead><tr><th data-col="0" onclick="toggleCol(0)" title="Click to shrink">🕐<span class="col-hint">↔</span></th><th data-col="1" onclick="toggleCol(1)" title="Click to shrink"><span class="col-hint">↔</span></th><th data-col="2" onclick="toggleCol(2)" title="Click to shrink">👤<span class="col-hint">↔</span></th><th data-col="3" onclick="toggleCol(3)" title="Click to shrink">Type<span class="col-hint">↔</span></th><th data-col="4" onclick="toggleCol(4)" title="Click to shrink">⭐<span class="col-hint">↔</span></th><th data-col="5" onclick="toggleCol(5)" title="Click to shrink">Group<span class="col-hint">↔</span></th><th data-col="6" onclick="toggleCol(6)" title="Click to shrink">Content<span class="col-hint">↔</span></th></tr></thead>
+<thead><tr><th data-col="0" title="Click to shrink/collapse">🕐<span class="col-hint">↔</span></th><th data-col="1" title="Click to shrink/collapse"><span class="col-hint">↔</span></th><th data-col="2" title="Click to shrink/collapse">👤<span class="col-hint">↔</span></th><th data-col="3" title="Click to shrink/collapse">Type<span class="col-hint">↔</span></th><th data-col="4" title="Click to shrink/collapse">⭐<span class="col-hint">↔</span></th><th data-col="5" title="Click to shrink/collapse">Group<span class="col-hint">↔</span></th><th data-col="6" title="Click to shrink/collapse">Content<span class="col-hint">↔</span></th></tr></thead>
 <tbody>{msg_rows}</tbody>
 </table>
 </div>
@@ -297,5 +295,5 @@ async function openThread(tid){{if(!tid)return;closeDropdowns();document.getElem
 
 function closeThread(){{document.getElementById('tpanel').classList.remove('open');document.querySelectorAll('.msg-row').forEach(r=>r.classList.remove('highlight'));closeDropdowns()}}
 
-function toggleCol(n){{document.querySelectorAll('[data-col='+n+']').forEach(el=>el.classList.toggle('shrunk'))}}
+document.querySelector('table').addEventListener('click',function(e){{var th=e.target.closest('th[data-col]');if(!th)return;var n=th.getAttribute('data-col');document.querySelectorAll('[data-col='+n+']').forEach(function(el){{el.classList.toggle('shrunk')}})}})
 </script></body></html>'''
