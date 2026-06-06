@@ -126,7 +126,7 @@ async def dashboard(group: str = Query(None), relevance: str = Query(None)):
             if mtype == "image" and thumb:
                 media_html = f'<a href="{content_url}" target="_blank" onclick="event.stopPropagation()"><img src="{thumb}" class="msg-thumb" onerror="this.style.display=\'none\'"></a><br><a href="{content_url}" target="_blank" class="drive-link" onclick="event.stopPropagation()">{icon_label} View on Drive</a>'
             else:
-                media_html = f'<a href="{content_url}" target="_blank" class="drive-link" onclick="event.stopPropagation()">{icon_label} View on Drive</a>'
+                media_html = f'<br><a href="{content_url}" target="_blank" class="drive-link" onclick="event.stopPropagation()">{icon_label} View on Drive</a>'
         elif mtype == "image" and mid:
             safe_group = (gname or 'Default').replace('/', '_')[:50]
             media_html = f'<img src="/media/{safe_group}/images/{mid}_image.jpg" class="msg-thumb" loading="lazy" onclick="event.stopPropagation()" onerror="this.style.display=\'none\'">'
