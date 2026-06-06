@@ -102,6 +102,8 @@ check("Thread dropdown in HTML", "threads-dropdown" in dash)
 # 4j. Control center loads properly
 check("Control center has table-wrap", "table-wrap" in control)
 check("Control center has mobile CSS", "@media" in control and "max-width:600" in control)
+check("Control center fetches live data", "fetch('/api/sysinfo')" in control or "api/sysinfo" in control)
+check("Control center has auto-refresh", "setInterval(refresh" in control)
 
 # ─── 5. PROCESSES ───
 print("\n⚙️ PROCESSES")

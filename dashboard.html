@@ -14,12 +14,9 @@
 body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   background:var(--bg);color:var(--text);min-height:100vh;
-  padding:1.5rem;font-size:16px;
-  -webkit-text-size-adjust:100%;
+  padding:1.5rem;font-size:16px;-webkit-text-size-adjust:100%;
 }
 .container{max-width:1600px;margin:0 auto}
-
-/* Typography */
 h1{
   font-size:clamp(1.3rem,4vw,2.2rem);
   background:linear-gradient(135deg,var(--accent),var(--accent2));
@@ -27,22 +24,18 @@ h1{
   margin-bottom:.3rem;line-height:1.3;
 }
 .sub{color:var(--muted);margin-bottom:1.5rem;font-size:clamp(.8rem,1.8vw,.95rem)}
+.fresh{color:var(--green);font-size:.7rem}
+.stale{color:var(--yellow);font-size:.7rem}
 h2{
-  font-size:clamp(1rem,2.5vw,1.3rem);
-  margin:1.5rem 0 .8rem;padding-bottom:.4rem;
-  border-bottom:1px solid var(--border);color:var(--accent);
+  font-size:clamp(1rem,2.5vw,1.3rem);margin:1.5rem 0 .8rem;
+  padding-bottom:.4rem;border-bottom:1px solid var(--border);color:var(--accent);
   cursor:pointer;user-select:none;display:flex;align-items:center;gap:.4rem;
 }
 h2 .chevron{font-size:.7rem;transition:transform .25s;display:inline-block}
 h2.collapsed .chevron{transform:rotate(-90deg)}
 h2.collapsed+.section-content{display:none}
-
-h3{font-size:clamp(.85rem,2vw,1rem);margin:1rem 0 .6rem;color:var(--muted)}
-
-/* Stat cards */
 .stat-row{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(clamp(140px,30%,200px),1fr));
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(clamp(140px,30%,200px),1fr));
   gap:clamp(.5rem,1.5vw,1rem);margin:1rem 0;
 }
 .stat-card{
@@ -53,191 +46,72 @@ h3{font-size:clamp(.85rem,2vw,1rem);margin:1rem 0 .6rem;color:var(--muted)}
 .stat-card .lbl{font-size:clamp(.65rem,1.2vw,.8rem);color:var(--muted);margin-top:.2rem}
 .stat-card.g .val{color:var(--green)}.stat-card.y .val{color:var(--yellow)}
 .stat-card.r .val{color:var(--red)}.stat-card.a .val{color:var(--accent)}
-
-/* Grids */
-.grid2{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(min(100%,450px),1fr));
-  gap:1rem;
-}
-.grid3{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));
-  gap:1rem;
-}
-
-/* Server sections */
-.server-section{
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:12px;overflow:hidden;min-width:0;
-}
-.server-header{
-  padding:.75rem 1rem;background:var(--bg3);
-  display:flex;justify-content:space-between;align-items:center;
-  flex-wrap:wrap;gap:.3rem;
-}
-.server-header h3{margin:0;color:var(--text)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,450px),1fr));gap:1rem}
+.server-section{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;min-width:0}
+.server-header{padding:.75rem 1rem;background:var(--bg3);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.3rem}
+.server-header h3{margin:0;color:var(--text);font-size:clamp(.85rem,2vw,1rem)}
 .server-body{padding:clamp(.6rem,1.5vw,1.2rem)}
-
-/* TABLE WRAPPER — the key mobile fix */
-.table-wrap{
-  width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
-  margin:0 -.5rem;padding:0 .5rem;
-  /* subtle scroll hint */
-  background:
-    linear-gradient(to right,var(--bg2) 30%,transparent),
-    linear-gradient(to left,var(--bg2) 30%,transparent),
-    linear-gradient(to right,rgba(99,102,241,.08),transparent),
-    linear-gradient(to left,rgba(99,102,241,.08),transparent);
-  background-position:left center,right center,left center,right center;
-  background-repeat:no-repeat;
-  background-size:20px 100%,20px 100%,10px 100%,10px 100%;
-  background-attachment:local,local,scroll,scroll;
-}
-
-/* Tables */
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;font-size:clamp(.72rem,1.3vw,.85rem);white-space:nowrap;min-width:500px}
-th{
-  background:var(--bg3);padding:.5rem .6rem;text-align:left;
-  color:var(--muted);font-weight:600;position:sticky;top:0;z-index:1;
-}
+th{background:var(--bg3);padding:.5rem .6rem;text-align:left;color:var(--muted);font-weight:600;position:sticky;top:0;z-index:1}
 td{padding:.4rem .6rem;border-bottom:1px solid var(--border)}
 tr:hover{background:rgba(99,102,241,0.05)}
-
-/* Status */
 .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;flex-shrink:0}
-.status-online .status-dot{background:var(--green)}
-.status-offline .status-dot{background:var(--red)}
-.status-warn .status-dot{background:var(--yellow)}
-
+.dot-online{background:var(--green)}.dot-offline{background:var(--red)}.dot-warn{background:var(--yellow)}
 .port{color:var(--muted);font-family:monospace;font-size:clamp(.68rem,1.1vw,.8rem)}
-
-/* Tags */
-.tag{
-  display:inline-block;padding:.15rem .5rem;border-radius:4px;
-  font-size:.7rem;font-weight:600;margin-left:.25rem;white-space:nowrap;
-}
+.tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.7rem;font-weight:600;margin-left:.25rem;white-space:nowrap}
 .tag-main{background:rgba(99,102,241,.2);color:var(--accent)}
 .tag-ginnie{background:rgba(249,115,22,.2);color:var(--orange)}
 .tag-trade{background:rgba(234,179,8,.2);color:var(--yellow)}
-
-/* Recovery blocks */
+.tag-live{background:rgba(34,197,94,.2);color:var(--green)}
 .recovery{
   background:rgba(99,102,241,.08);border-left:3px solid var(--accent);
   padding:.7rem .9rem;margin:.6rem 0;border-radius:0 8px 8px 0;
   font-family:monospace;font-size:clamp(.65rem,1.1vw,.8rem);
   color:var(--muted);white-space:pre-wrap;overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
 }
 .recovery code{color:var(--green);word-break:break-all}
-
-/* Memory bars */
 .mem-bar{height:6px;border-radius:3px;background:var(--bg3);margin-top:.3rem;overflow:hidden}
 .mem-fill{height:100%;border-radius:3px;transition:width .5s}
 .mem-ok{background:var(--green)}.mem-warn{background:var(--yellow)}.mem-danger{background:var(--red)}
 .mem-label{display:flex;justify-content:space-between;font-size:clamp(.6rem,1vw,.75rem);color:var(--muted);margin-top:.2rem;flex-wrap:wrap;gap:.2rem}
+.loading{opacity:.5;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
 
-/* Buttons */
-.actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
-.btn{
-  background:var(--bg3);border:1px solid var(--border);color:var(--text);
-  padding:.5rem 1rem;border-radius:6px;cursor:pointer;
-  font-size:clamp(.75rem,1.2vw,.85rem);transition:all .2s;
-  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
-}
-.btn:active{background:var(--accent);border-color:var(--accent)}
-@media(hover:hover){.btn:hover{background:var(--accent);border-color:var(--accent)}}
-
-/* Full-width section (non-grid) */
-.section-full{max-width:800px}
-
-/* ──────────────────────────────
-   MOBILE BREAKPOINTS
-   ────────────────────────────── */
-
-/* Tablet-ish */
-@media(max-width:900px){
-  body{padding:1rem}
-  .grid2{grid-template-columns:1fr}
-  .grid3{grid-template-columns:1fr}
-  .stat-row{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
-}
-
-/* Phone */
+@media(max-width:900px){body{padding:1rem}.grid2{grid-template-columns:1fr}.stat-row{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}}
 @media(max-width:600px){
-  body{padding:.6rem}
-  h1{font-size:1.2rem}
-  h2{font-size:1rem;margin:1rem 0 .5rem}
-  h2 .chevron{font-size:.65rem}
-
-  .stat-row{grid-template-columns:repeat(2,1fr);gap:.4rem}
-  .stat-card{padding:.6rem;border-radius:8px}
-  .stat-card .val{font-size:1.2rem}
-  .server-header{padding:.6rem .75rem}
-  .server-body{padding:.5rem .6rem}
-  .table-wrap{margin:0 -.3rem;padding:0 .3rem}
-
-  /* Make table cells wrap on very small screens */
-  table{font-size:.7rem;min-width:420px}
-  th,td{padding:.35rem .4rem}
-
-  .recovery{padding:.5rem .6rem;font-size:.62rem}
-  .tag{font-size:.62rem;padding:.1rem .35rem}
-  .port{font-size:.65rem}
-
-  /* Stack sub + recovery side-by-side-ish */
-  .section-full{max-width:100%}
+  body{padding:.6rem}h1{font-size:1.2rem}h2{font-size:1rem;margin:1rem 0 .5rem}
+  .stat-row{grid-template-columns:repeat(2,1fr);gap:.4rem}.stat-card{padding:.6rem;border-radius:8px}
+  .stat-card .val{font-size:1.2rem}.server-header{padding:.6rem .75rem}.server-body{padding:.5rem .6rem}
+  table{font-size:.7rem;min-width:420px}th,td{padding:.35rem .4rem}.recovery{padding:.5rem .6rem;font-size:.62rem}
+  .tag{font-size:.62rem;padding:.1rem .35rem}.port{font-size:.65rem}
 }
-
-/* Very small */
 @media(max-width:380px){
-  body{padding:.4rem}
-  .stat-row{grid-template-columns:1fr 1fr;gap:.3rem}
-  .stat-card{padding:.45rem}
-  .stat-card .val{font-size:1rem}
-  .stat-card .lbl{font-size:.6rem}
-  table{font-size:.64rem;min-width:380px}
-  th,td{padding:.3rem .35rem}
+  body{padding:.4rem}.stat-row{grid-template-columns:1fr 1fr;gap:.3rem}.stat-card{padding:.45rem}.stat-card .val{font-size:1rem}
+  table{font-size:.64rem;min-width:380px}th,td{padding:.3rem .35rem}
 }
-
-/* ──────────────────────────────
-   PRINT
-   ────────────────────────────── */
-@media print{
-  body{background:#fff;color:#000;padding:0}
-  .server-section{border:1px solid #ccc;break-inside:avoid}
-  .recovery{display:none}
-}
-
-/* ──────────────────────────────
-   SCROLLBAR STYLING
-   ────────────────────────────── */
-.table-wrap::-webkit-scrollbar{height:4px}
-.table-wrap::-webkit-scrollbar-track{background:transparent}
-.table-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 </style>
 </head>
 <body>
 <div class="container">
-
 <h1>⚡ CFOTH Control Center</h1>
-<p class="sub">All services across Main VPS + Ginnie · Updated <span id="updated"></span></p>
+<p class="sub">All services across Main VPS + Ginnie · <span id="updated">loading...</span> <span id="freshness"></span></p>
 
 <!-- ===== RESOURCES ===== -->
 <h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 📊 System Resources</h2>
 <div class="section-content">
 <div class="stat-row">
-  <div class="stat-card"><div class="lbl">Main RAM</div><div class="val">7.7/11 GB</div><div class="mem-bar"><div class="mem-fill mem-ok" style="width:70%"></div></div><div class="mem-label"><span>70% used</span><span>4.0 GB free</span></div></div>
-  <div class="stat-card"><div class="lbl">Main Disk</div><div class="val y">79%</div><div class="mem-bar"><div class="mem-fill mem-warn" style="width:79%"></div></div><div class="mem-label"><span>152/199 GB</span><span>42 GB free ⚠️</span></div></div>
-  <div class="stat-card"><div class="lbl">Ginnie RAM</div><div class="val g">52%</div><div class="mem-bar"><div class="mem-fill mem-ok" style="width:52%"></div></div><div class="mem-label"><span>4.0/7.8 GB</span><span>3.7 GB free</span></div></div>
-  <div class="stat-card"><div class="lbl">Ginnie Disk</div><div class="val y">70%</div><div class="mem-bar"><div class="mem-fill mem-warn" style="width:70%"></div></div><div class="mem-label"><span>68/96 GB</span><span>29 GB free</span></div></div>
-  <div class="stat-card"><div class="lbl">Main CPU</div><div class="val a">6</div><div class="lbl">cores</div></div>
-  <div class="stat-card"><div class="lbl">Ginnie CPU</div><div class="val a">2</div><div class="lbl">cores</div></div>
+  <div class="stat-card"><div class="lbl">Main RAM</div><div class="val" id="main-ram">...</div><div class="mem-bar"><div class="mem-fill mem-ok" id="main-ram-bar" style="width:0%"></div></div><div class="mem-label"><span id="main-ram-pct">...</span><span id="main-ram-free">...</span></div></div>
+  <div class="stat-card"><div class="lbl">Main Disk</div><div class="val y" id="main-disk">...</div><div class="mem-bar"><div class="mem-fill mem-warn" id="main-disk-bar" style="width:0%"></div></div><div class="mem-label"><span id="main-disk-used">...</span><span id="main-disk-free">...</span></div></div>
+  <div class="stat-card"><div class="lbl">Ginnie RAM</div><div class="val g" id="ginnie-ram">...</div><div class="mem-bar"><div class="mem-fill mem-ok" id="ginnie-ram-bar" style="width:0%"></div></div><div class="mem-label"><span id="ginnie-ram-pct">...</span></div></div>
+  <div class="stat-card"><div class="lbl">Ginnie Disk</div><div class="val y" id="ginnie-disk">...</div><div class="mem-bar"><div class="mem-fill mem-warn" id="ginnie-disk-bar" style="width:0%"></div></div><div class="mem-label"><span id="ginnie-disk-pct">...</span></div></div>
+  <div class="stat-card"><div class="lbl">Main CPU</div><div class="val a" id="main-cpu">...</div><div class="lbl" id="main-cpu-pct"></div></div>
+  <div class="stat-card"><div class="lbl">Ginnie CPU</div><div class="val a" id="ginnie-cpu">...</div><div class="lbl">cores</div></div>
 </div>
 </div>
 
 <!-- ===== MAIN VPS ===== -->
-<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 🖥 Main VPS — 185.218.125.121 (Contabo)</h2>
+<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 🖥 Main VPS — <span id="main-host">...</span> (Contabo)</h2>
 <div class="section-content">
 <div class="grid2">
   <!-- Core Services -->
@@ -246,14 +120,7 @@ tr:hover{background:rgba(99,102,241,0.05)}
     <div class="server-body">
       <div class="table-wrap"><table>
         <tr><th>Service</th><th>Port</th><th>Status</th><th>Memory</th></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Hermes Agent Gateway</td><td class="port">8642</td><td>online</td><td>466 MB</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>vibe-trading MCP</td><td class="port">—</td><td>online</td><td>216 MB</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>PostgreSQL 17 (Docker)</td><td class="port">5432</td><td>online</td><td>—</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>PostgreSQL 16 (System)</td><td class="port">5433</td><td>online</td><td>—</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Redis (LGIAP)</td><td class="port">6380</td><td>online</td><td>8 MB</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Redis (System)</td><td class="port">6379</td><td>online</td><td>—</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Ginnie SSH Tunnel (Ollama)</td><td class="port">11434</td><td>online</td><td>6 MB</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>PM2 Daemon</td><td class="port">—</td><td>online</td><td>54 MB</td></tr>
+        <tbody id="pm2-core"></tbody>
       </table></div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
@@ -270,38 +137,37 @@ tr:hover{background:rgba(99,102,241,0.05)}
     <div class="server-body">
       <div class="table-wrap"><table>
         <tr><th>Service</th><th>URL</th><th>Status</th><th>Memory</th></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Hub Server</td><td class="port">sasin.cfoth.ai</td><td>online</td><td>54 MB</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Capture Server</td><td class="port">capture.sasin.cfoth.ai</td><td>online</td><td>73 MB</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>2nd Brain Server</td><td class="port">brain (8400)</td><td>online</td><td>42 MB</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Nginx (HTTP/HTTPS)</td><td class="port">80/443</td><td>online</td><td>3 MB</td></tr>
+        <tbody id="pm2-sasin"></tbody>
       </table></div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
 <code>pm2 restart hub-server capture-server brain-server</code>
-Hub serves <code>sasin.cfoth.ai</code> via nginx → :8081
-Capture serves <code>capture.sasin.cfoth.ai</code> via nginx → :8895
-Brain API at <code>localhost:8400</code> (proxied at /brain/)
+Hub: <code>sasin.cfoth.ai</code> → :8081 | Capture: <code>capture.sasin.cfoth.ai</code> → :8895
+Brain API: <code>localhost:8400</code> (proxied at /brain/)
       </div>
     </div>
   </div>
 
   <!-- LGIAP -->
   <div class="server-section">
-    <div class="server-header"><h3>🤖 LGIAP (LINE Archive)</h3><span class="tag tag-main">MAIN</span></div>
+    <div class="server-header"><h3>🤖 LGIAP (LINE Archive)</h3><span class="tag tag-live">LIVE</span></div>
     <div class="server-body">
       <div class="table-wrap"><table>
         <tr><th>Service</th><th>Port</th><th>Status</th><th>Memory</th></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>LGIAP API</td><td class="port">8085</td><td>online</td><td>78 MB</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>LGIAP Worker (5 proc)</td><td class="port">—</td><td>online</td><td>25 MB</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>PostgreSQL (lgiap DB)</td><td class="port">5432</td><td>online</td><td>—</td></tr>
+        <tbody id="pm2-lgiap"></tbody>
       </table></div>
+      <div id="lgiap-stats" style="display:flex;gap:.8rem;flex-wrap:wrap;font-size:.7rem;color:var(--muted);margin:.5rem 0">
+        <span>📨 <b id="s-msgs">...</b> msgs</span>
+        <span>👥 <b id="s-groups">...</b> groups</span>
+        <span>👤 <b id="s-users">...</b> users</span>
+        <span>⭐ <b id="s-useful">...</b> useful</span>
+        <span>⏳ <b id="s-pending">...</b> pending</span>
+      </div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
 <code>pm2 restart lgiap-api lgiap-worker</code>
 API: <code>https://lgiap.sasin.cfoth.ai/health</code>
 Webhook: <code>https://lgiap.sasin.cfoth.ai/webhook</code>
-Worker logs: <code>pm2 logs lgiap-worker</code>
-<strong>⚠️ Needs LINE credentials (CHANNEL_SECRET + TOKEN) to go live</strong>
       </div>
     </div>
   </div>
@@ -312,26 +178,14 @@ Worker logs: <code>pm2 logs lgiap-worker</code>
     <div class="server-body">
       <div class="table-wrap"><table>
         <tr><th>Service</th><th>Port</th><th>Status</th></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Live Assistant Bot</td><td class="port">9000</td><td>online</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Gemini Vision Proxy</td><td class="port">8499</td><td>online</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Market API</td><td class="port">5050</td><td>online</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Sasin Billing</td><td class="port">8500</td><td>online</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Upload Server</td><td class="port">8897</td><td>online</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Old Dashboard (8888)</td><td class="port">8888</td><td>online</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Old 2nd Brain (8899)</td><td class="port">8899</td><td>online</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Search Server</td><td class="port">5001</td><td>online</td></tr>
+        <tbody id="pm2-other"></tbody>
       </table></div>
-      <div class="recovery">
-<strong>🔄 Recovery:</strong>
-<code>pm2 list</code> for PM2-managed services
-Non-PM2: <code>ps aux | grep python3</code> then restart manually
-      </div>
     </div>
   </div>
 </div>
 </div>
 
-<!-- ===== GINNIE VPS ===== -->
+<!-- ===== GINNIE ===== -->
 <h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 🟠 Ginnie VPS — 72.60.43.17 (Hostinger)</h2>
 <div class="section-content">
 <div class="grid2">
@@ -339,14 +193,8 @@ Non-PM2: <code>ps aux | grep python3</code> then restart manually
     <div class="server-header"><h3>🐳 Docker Containers</h3><span class="tag tag-ginnie">GINNIE</span></div>
     <div class="server-body">
       <div class="table-wrap"><table>
-        <tr><th>Container</th><th>Port</th><th>Status</th></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>OpenClaw (Bot Gateway)</td><td class="port">18789</td><td>23h up</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Traefik (Reverse Proxy)</td><td class="port">80/443</td><td>9d up</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Freqtrade #1</td><td class="port">—</td><td>4w up</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Freqtrade #2</td><td class="port">8081</td><td>8w up</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>MT5 VNC</td><td class="port">6901</td><td>5w up</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>VerityTech</td><td class="port">—</td><td>4w up</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Trading Agents Web</td><td class="port">—</td><td>4w up</td></tr>
+        <tr><th>Container</th><th>Status</th></tr>
+        <tbody id="ginnie-containers"><tr><td colspan="2" class="loading">Loading...</td></tr></tbody>
       </table></div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
@@ -363,15 +211,14 @@ Non-PM2: <code>ps aux | grep python3</code> then restart manually
     <div class="server-body">
       <div class="table-wrap"><table>
         <tr><th>Model</th><th>Size</th><th>Purpose</th></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>bge-m3</td><td>1.2 GB</td><td>LGIAP embeddings (via tunnel :11434)</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>qwen2.5:3b</td><td>1.9 GB</td><td>General LLM</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>nomic-embed-text</td><td>274 MB</td><td>Alternative embeddings</td></tr>
+        <tr><td>✅ bge-m3</td><td>1.2 GB</td><td>LGIAP embeddings (via tunnel :11434)</td></tr>
+        <tr><td>✅ qwen2.5:3b</td><td>1.9 GB</td><td>General LLM</td></tr>
+        <tr><td>✅ nomic-embed-text</td><td>274 MB</td><td>Alternative embeddings</td></tr>
       </table></div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
-On Ginnie: <code>systemctl restart ollama</code>
-From Main: <code>ssh -i ~/.ssh/ginnie-recovery -N -L 11434:127.0.0.1:11434 root@72.60.43.17 &</code>
-Test: <code>curl http://127.0.0.1:11434/api/tags</code>
+Ginnie: <code>systemctl restart ollama</code>
+Main tunnel: <code>ssh -i ~/.ssh/ginnie-recovery -N -L 11434:127.0.0.1:11434 root@72.60.43.17 &</code>
 <strong>Auto-fallback:</strong> LGIAP uses Gemini embeddings if Ginnie is down.
       </div>
     </div>
@@ -382,108 +229,171 @@ Test: <code>curl http://127.0.0.1:11434/api/tags</code>
     <div class="server-body">
       <div class="table-wrap"><table>
         <tr><th>Service</th><th>Status</th></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Oracle Maw Orchestrator</td><td>online</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Oracle Memory API</td><td>online</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Freqtrade Dashboard</td><td>online</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Freqtrade Web Dashboard</td><td>online</td></tr>
-        <tr class="status-online"><td><span class="status-dot"></span>Freqtrade News Monitor</td><td>online</td></tr>
-      </table></div>
-      <div class="recovery">
-<strong>🔄 Recovery:</strong>
-<code>systemctl restart freqtrade-dashboard freqtrade-webdash freqtrade-news-monitor</code>
-<code>systemctl restart oracle-maw oracle-memory</code>
-      </div>
-    </div>
-  </div>
-
-  <div class="server-section">
-    <div class="server-header"><h3>⏰ Cron Jobs (Ginnie)</h3><span class="tag tag-ginnie">GINNIE</span></div>
-    <div class="server-body">
-      <div class="table-wrap"><table>
-        <tr><th>Schedule</th><th>Job</th></tr>
-        <tr><td>19:00 daily</td><td>Freqtrade NFI Strategy Update</td></tr>
-        <tr><td>Every 5 min</td><td>OpenClaw Watchdog</td></tr>
-        <tr><td>Every 5 min</td><td>Cross-Monitor MEW</td></tr>
+        <tr><td>✅ Oracle Maw Orchestrator</td><td>online</td></tr>
+        <tr><td>✅ Oracle Memory API</td><td>online</td></tr>
+        <tr><td>✅ Freqtrade Dashboard</td><td>online</td></tr>
+        <tr><td>✅ Freqtrade Web Dashboard</td><td>online</td></tr>
+        <tr><td>✅ Freqtrade News Monitor</td><td>online</td></tr>
       </table></div>
     </div>
   </div>
 </div>
 </div>
 
-<!-- ===== CRON JOBS (Main VPS) ===== -->
-<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> ⏰ Cron Jobs — Main VPS</h2>
+<!-- ===== CRON JOBS ===== -->
+<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> ⏰ Cron Jobs</h2>
 <div class="section-content">
-<div class="section-full">
-<div class="server-section">
-  <div class="server-header"><h3>Hermes-Managed Cron</h3></div>
+<div class="server-section" style="max-width:800px">
   <div class="server-body">
     <div class="table-wrap"><table>
-      <tr><th>Job</th><th>Schedule</th><th>Runs</th></tr>
-      <tr class="status-online"><td><span class="status-dot"></span>Portfolio Grid Monitor</td><td>Every 30m</td><td>1,902</td></tr>
-      <tr class="status-online"><td><span class="status-dot"></span>Sasin Upload Watchdog</td><td>—</td><td>active</td></tr>
+      <tr><th>Job</th><th>Schedule</th></tr>
+      <tr><td>✅ LGIAP Self-Test</td><td>Every 30m</td></tr>
+      <tr><td>✅ LGIAP Analyzer</td><td>Every 5m</td></tr>
+      <tr><td>✅ Portfolio Grid Monitor</td><td>Every 30m</td></tr>
+      <tr><td>✅ Sasin Upload Watchdog</td><td>Active</td></tr>
     </table></div>
   </div>
 </div>
 </div>
-</div>
 
-<!-- ===== QUICK RECOVERY ===== -->
+<!-- ===== EMERGENCY ===== -->
 <h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 🚨 Emergency Recovery</h2>
 <div class="section-content">
-<div class="section-full">
-<div class="server-section">
+<div class="server-section" style="max-width:800px">
   <div class="server-body">
     <div class="recovery"><strong>Main VPS full restart:</strong>
 <code>ssh -i ~/.ssh/hermes_key root@185.218.125.121</code>
 <code>pm2 restart all</code>
 <code>systemctl reload nginx</code>
-<code>curl http://127.0.0.1:8081/health</code> (Hub)
-<code>curl http://127.0.0.1:8085/health</code> (LGIAP)
     </div>
     <div class="recovery"><strong>Ginnie VPS full restart:</strong>
 <code>ssh -i ~/.ssh/ginnie-recovery root@72.60.43.17</code>
 <code>docker restart $(docker ps -q)</code>
 <code>systemctl restart ollama</code>
-<strong>Then from Main VPS:</strong>
-<code>ssh -i ~/.ssh/ginnie-recovery -N -L 11434:127.0.0.1:11434 root@72.60.43.17 &</code>
     </div>
     <div class="recovery"><strong>LGIAP quick check:</strong>
 <code>curl https://lgiap.sasin.cfoth.ai/health</code>
 <code>pm2 logs lgiap-worker --lines 10</code>
-<code>psql -h 127.0.0.1 -U postgres -d lgiap -c "SELECT count(*) FROM messages"</code>
     </div>
   </div>
 </div>
 </div>
-</div>
-
-<!-- ===== CLEANUP CANDIDATES ===== -->
-<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 🧹 Cleanup Candidates</h2>
-<div class="section-content">
-<div class="section-full">
-<div class="server-section">
-  <div class="server-header"><h3>Items to Review</h3></div>
-  <div class="server-body">
-    <div class="table-wrap"><table>
-      <tr><th>Server</th><th>Item</th><th>Size</th><th>Risk</th></tr>
-      <tr><td>Main</td><td>Old 2nd Brain (port 8899)</td><td>—</td><td>⚠️ Verify first</td></tr>
-      <tr><td>Main</td><td>Old Dashboard server.py (port 8888)</td><td>—</td><td>⚠️ Verify first</td></tr>
-      <tr><td>Main</td><td>Polymarket-BTC Trading Bot dir</td><td>1.7 MB</td><td>⚠️ Verify</td></tr>
-      <tr><td>Main</td><td>DeepTutor directory</td><td>208 MB</td><td>⚠️ If unused</td></tr>
-      <tr><td>Main</td><td>/data/state.db</td><td>1,009 MB</td><td>⚠️ Hermes sessions</td></tr>
-      <tr><td>Main</td><td>/data/sessions</td><td>841 MB</td><td>⚠️ Hermes session data</td></tr>
-      <tr><td>Ginnie</td><td>/home/oracle</td><td>3.6 GB</td><td>⚠️ Unknown contents</td></tr>
-      <tr><td>Ginnie</td><td>/root/ghq</td><td>1.1 GB</td><td>⚠️ Git cache?</td></tr>
-      <tr><td>Ginnie</td><td>Freqtrade #2 container</td><td>—</td><td>⚠️ Two instances</td></tr>
-    </table></div>
-  </div>
-</div>
-</div>
-</div>
 
 </div>
+
 <script>
-document.getElementById('updated').textContent = new Date().toLocaleString();
+const PM2_PORTS = {
+  'hermes-gateway': 8642, 'brain-server': 8400, 'capture-server': 8895, 
+  'hub-server': 8081, 'lgiap-api': 8085, 'lgiap-worker': null,
+  'live-bot': 9000, 'gemini-vision': 8499, 'market-api': 5050,
+  'sasin-billing': 8500, 'upload-server': 8897,
+};
+
+const PM2_CATEGORY = {
+  'hermes-gateway': 'core', 'vibe-trading': 'core', 'brain-server': 'sasin',
+  'capture-server': 'sasin', 'hub-server': 'sasin', 'lgiap-api': 'lgiap',
+  'lgiap-worker': 'lgiap', 'live-bot': 'other', 'gemini-vision': 'other',
+  'market-api': 'other', 'sasin-billing': 'other', 'upload-server': 'other',
+};
+
+async function refresh() {
+  try {
+    const r = await fetch('/api/sysinfo');
+    const d = await r.json();
+    updateStats(d);
+    updatePM2(d.pm2 || []);
+    updateGinnie(d.ginnie || {});
+    updateLGIAP(d.lgiap || {});
+    document.getElementById('updated').textContent = d.updated;
+    const age = (Date.now() - new Date(d.updated).getTime()) / 1000;
+    const f = document.getElementById('freshness');
+    f.textContent = age < 120 ? '(live)' : `(${Math.round(age)}s ago)';
+    f.className = age < 120 ? 'fresh' : 'stale';
+  } catch(e) {
+    document.getElementById('updated').textContent = 'API error';
+  }
+}
+
+function updateStats(d) {
+  const m = d.main || {};
+  const g = d.ginnie || {};
+  // Main
+  document.getElementById('main-ram').textContent = m.ram_used_gb+'/'+m.ram_total_gb+' GB';
+  document.getElementById('main-ram-bar').style.width = m.ram_pct+'%';
+  document.getElementById('main-ram-pct').textContent = m.ram_pct+'% used';
+  document.getElementById('main-ram-free').textContent = m.ram_free_gb+' GB free';
+  document.getElementById('main-disk').textContent = m.disk_pct+'%';
+  document.getElementById('main-disk-bar').style.width = m.disk_pct+'%';
+  document.getElementById('main-disk-used').textContent = m.disk_used_gb+'/'+m.disk_total_gb+' GB';
+  document.getElementById('main-disk-free').textContent = m.disk_free_gb+' GB free';
+  document.getElementById('main-cpu').textContent = m.cpu_cores;
+  document.getElementById('main-cpu-pct').textContent = m.cpu_pct+'% load';
+  document.getElementById('main-host').textContent = m.hostname || '185.218.125.121';
+  // Ginnie
+  if (!g.error) {
+    document.getElementById('ginnie-ram').textContent = g.ram_pct+'%';
+    document.getElementById('ginnie-ram-bar').style.width = g.ram_pct+'%';
+    document.getElementById('ginnie-ram-pct').textContent = g.ram_used+'/'+g.ram_total+' GB';
+    document.getElementById('ginnie-disk').textContent = g.disk_pct+'%';
+    document.getElementById('ginnie-disk-bar').style.width = g.disk_pct+'%';
+    document.getElementById('ginnie-disk-pct').textContent = g.disk_used+'/'+g.disk_total+' GB';
+    document.getElementById('ginnie-cpu').textContent = g.cpu_cores;
+  } else {
+    document.getElementById('ginnie-ram').textContent = 'offline';
+    document.getElementById('ginnie-disk').textContent = 'offline';
+    document.getElementById('ginnie-cpu').textContent = '?';
+  }
+}
+
+function updatePM2(pm2) {
+  const core = [], sasin = [], lgiap = [], other = [];
+  for (const p of pm2) {
+    const cat = PM2_CATEGORY[p.name] || (p.name.includes('brain')||p.name.includes('capture')||p.name.includes('hub')?'sasin':p.name.includes('lgiap')?'lgiap':'other');
+    const dot = p.status === 'online' ? '<span class="status-dot dot-online"></span>' :
+                p.status === 'stopped' ? '<span class="status-dot dot-offline"></span>' :
+                '<span class="status-dot dot-warn"></span>';
+    const port = PM2_PORTS[p.name] ? `<span class="port">${PM2_PORTS[p.name]}</span>` : '<span class="port">—</span>';
+    const mem = p.memory_mb > 0 ? `${p.memory_mb} MB` : '—';
+    const row = `<tr><td>${dot}${p.name}</td><td>${port}</td><td>${p.status}</td><td>${mem}</td></tr>`;
+    if (cat === 'core') core.push(row);
+    else if (cat === 'sasin') sasin.push(row);
+    else if (cat === 'lgiap') lgiap.push(row);
+    else other.push(row);
+  }
+  document.getElementById('pm2-core').innerHTML = core.join('') || '<tr><td colspan="4">No processes</td></tr>';
+  document.getElementById('pm2-sasin').innerHTML = sasin.join('') || '<tr><td colspan="4">No processes</td></tr>';
+  document.getElementById('pm2-lgiap').innerHTML = lgiap.join('') || '<tr><td colspan="4">No processes</td></tr>';
+  document.getElementById('pm2-other').innerHTML = other.join('') || '<tr><td colspan="3">No processes</td></tr>';
+}
+
+function updateGinnie(g) {
+  const el = document.getElementById('ginnie-containers');
+  if (g.error) {
+    el.innerHTML = '<tr><td colspan="2" style="color:var(--red)">⚠ '+g.error+'</td></tr>';
+    return;
+  }
+  const containers = g.containers || [];
+  if (!containers.length) {
+    el.innerHTML = '<tr><td colspan="2">No container data (psutil may not be installed on Ginnie)</td></tr>';
+    return;
+  }
+  el.innerHTML = containers.map(c => {
+    const up = c.status && c.status.toLowerCase().includes('up');
+    const dot = up ? '<span class="status-dot dot-online"></span>' : '<span class="status-dot dot-warn"></span>';
+    return `<tr><td>${dot}${c.name}</td><td>${c.status}</td></tr>`;
+  }).join('');
+}
+
+function updateLGIAP(l) {
+  document.getElementById('s-msgs').textContent = l.msgs || 0;
+  document.getElementById('s-groups').textContent = l.groups || 0;
+  document.getElementById('s-users').textContent = l.users || 0;
+  document.getElementById('s-useful').textContent = l.useful || 0;
+  document.getElementById('s-pending').textContent = l.pending || 0;
+}
+
+refresh();
+setInterval(refresh, 60000);
 </script>
 </body>
 </html>
