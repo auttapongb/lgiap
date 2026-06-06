@@ -32,6 +32,15 @@ app.include_router(thread_router)
 from app.oauth_callback import router as oauth_router
 app.include_router(oauth_router)
 
+# Serve control center dashboard
+from fastapi.responses import HTMLResponse
+@app.get("/control", response_class=HTMLResponse)
+async def control_center():
+    import os as _os
+    path = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "dashboard.html")
+    with open(path) as f:
+        return f.read()
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8085))

@@ -2,72 +2,230 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>CFOTH Control Center</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#0f172a;--bg2:#1e293b;--bg3:#273449;--border:rgba(148,163,184,0.12);
   --text:#e2e8f0;--muted:#94a3b8;--accent:#6366f1;--accent2:#8b5cf6;
   --green:#22c55e;--yellow:#eab308;--red:#ef4444;--orange:#f97316;
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;
+  padding:1.5rem;font-size:16px;
+  -webkit-text-size-adjust:100%;
+}
 .container{max-width:1600px;margin:0 auto}
-h1{font-size:2.2rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.3rem}
-.sub{color:var(--muted);margin-bottom:2rem;font-size:.95rem}
-h2{font-size:1.3rem;margin:2rem 0 1rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);color:var(--accent)}
-h3{font-size:1rem;margin:1.5rem 0 .8rem;color:var(--muted)}
 
-.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0}
-.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;text-align:center}
-.stat-card .val{font-size:2rem;font-weight:700}
-.stat-card .lbl{font-size:.8rem;color:var(--muted);margin-top:.2rem}
-.stat-card.g .val{color:var(--green)}.stat-card.y .val{color:var(--yellow)}.stat-card.r .val{color:var(--red)}.stat-card.a .val{color:var(--accent)}
+/* Typography */
+h1{
+  font-size:clamp(1.3rem,4vw,2.2rem);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:.3rem;line-height:1.3;
+}
+.sub{color:var(--muted);margin-bottom:1.5rem;font-size:clamp(.8rem,1.8vw,.95rem)}
+h2{
+  font-size:clamp(1rem,2.5vw,1.3rem);
+  margin:1.5rem 0 .8rem;padding-bottom:.4rem;
+  border-bottom:1px solid var(--border);color:var(--accent);
+  cursor:pointer;user-select:none;display:flex;align-items:center;gap:.4rem;
+}
+h2 .chevron{font-size:.7rem;transition:transform .25s;display:inline-block}
+h2.collapsed .chevron{transform:rotate(-90deg)}
+h2.collapsed+.section-content{display:none}
 
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(500px,1fr));gap:1.5rem}
-.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem}
+h3{font-size:clamp(.85rem,2vw,1rem);margin:1rem 0 .6rem;color:var(--muted)}
 
-.server-section{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
-.server-header{padding:1rem 1.2rem;background:var(--bg3);display:flex;justify-content:space-between;align-items:center}
+/* Stat cards */
+.stat-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(clamp(140px,30%,200px),1fr));
+  gap:clamp(.5rem,1.5vw,1rem);margin:1rem 0;
+}
+.stat-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:clamp(.7rem,2vw,1.2rem);text-align:center;
+}
+.stat-card .val{font-size:clamp(1.2rem,3.5vw,2rem);font-weight:700}
+.stat-card .lbl{font-size:clamp(.65rem,1.2vw,.8rem);color:var(--muted);margin-top:.2rem}
+.stat-card.g .val{color:var(--green)}.stat-card.y .val{color:var(--yellow)}
+.stat-card.r .val{color:var(--red)}.stat-card.a .val{color:var(--accent)}
+
+/* Grids */
+.grid2{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,450px),1fr));
+  gap:1rem;
+}
+.grid3{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));
+  gap:1rem;
+}
+
+/* Server sections */
+.server-section{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;min-width:0;
+}
+.server-header{
+  padding:.75rem 1rem;background:var(--bg3);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:.3rem;
+}
 .server-header h3{margin:0;color:var(--text)}
-.server-body{padding:1.2rem}
+.server-body{padding:clamp(.6rem,1.5vw,1.2rem)}
 
-table{width:100%;border-collapse:collapse;font-size:.85rem}
-th{background:var(--bg3);padding:.5rem .7rem;text-align:left;color:var(--muted);font-weight:600}
-td{padding:.45rem .7rem;border-bottom:1px solid var(--border)}
+/* TABLE WRAPPER — the key mobile fix */
+.table-wrap{
+  width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin:0 -.5rem;padding:0 .5rem;
+  /* subtle scroll hint */
+  background:
+    linear-gradient(to right,var(--bg2) 30%,transparent),
+    linear-gradient(to left,var(--bg2) 30%,transparent),
+    linear-gradient(to right,rgba(99,102,241,.08),transparent),
+    linear-gradient(to left,rgba(99,102,241,.08),transparent);
+  background-position:left center,right center,left center,right center;
+  background-repeat:no-repeat;
+  background-size:20px 100%,20px 100%,10px 100%,10px 100%;
+  background-attachment:local,local,scroll,scroll;
+}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:clamp(.72rem,1.3vw,.85rem);white-space:nowrap;min-width:500px}
+th{
+  background:var(--bg3);padding:.5rem .6rem;text-align:left;
+  color:var(--muted);font-weight:600;position:sticky;top:0;z-index:1;
+}
+td{padding:.4rem .6rem;border-bottom:1px solid var(--border)}
 tr:hover{background:rgba(99,102,241,0.05)}
-.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+
+/* Status */
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;flex-shrink:0}
 .status-online .status-dot{background:var(--green)}
 .status-offline .status-dot{background:var(--red)}
 .status-warn .status-dot{background:var(--yellow)}
-.port{color:var(--muted);font-family:monospace;font-size:.8rem}
-.tag{display:inline-block;padding:.1rem .5rem;border-radius:4px;font-size:.7rem;font-weight:600;margin-left:.3rem}
+
+.port{color:var(--muted);font-family:monospace;font-size:clamp(.68rem,1.1vw,.8rem)}
+
+/* Tags */
+.tag{
+  display:inline-block;padding:.15rem .5rem;border-radius:4px;
+  font-size:.7rem;font-weight:600;margin-left:.25rem;white-space:nowrap;
+}
 .tag-main{background:rgba(99,102,241,.2);color:var(--accent)}
 .tag-ginnie{background:rgba(249,115,22,.2);color:var(--orange)}
 .tag-trade{background:rgba(234,179,8,.2);color:var(--yellow)}
 
-.recovery{background:rgba(99,102,241,.08);border-left:3px solid var(--accent);padding:.8rem 1rem;margin:.8rem 0;border-radius:0 8px 8px 0;font-family:monospace;font-size:.8rem;color:var(--muted);white-space:pre-wrap;overflow-x:auto}
-.recovery code{color:var(--green)}
+/* Recovery blocks */
+.recovery{
+  background:rgba(99,102,241,.08);border-left:3px solid var(--accent);
+  padding:.7rem .9rem;margin:.6rem 0;border-radius:0 8px 8px 0;
+  font-family:monospace;font-size:clamp(.65rem,1.1vw,.8rem);
+  color:var(--muted);white-space:pre-wrap;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.recovery code{color:var(--green);word-break:break-all}
 
+/* Memory bars */
 .mem-bar{height:6px;border-radius:3px;background:var(--bg3);margin-top:.3rem;overflow:hidden}
 .mem-fill{height:100%;border-radius:3px;transition:width .5s}
 .mem-ok{background:var(--green)}.mem-warn{background:var(--yellow)}.mem-danger{background:var(--red)}
-.mem-label{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:.2rem}
+.mem-label{display:flex;justify-content:space-between;font-size:clamp(.6rem,1vw,.75rem);color:var(--muted);margin-top:.2rem;flex-wrap:wrap;gap:.2rem}
 
+/* Buttons */
 .actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
-.btn{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .2s}
-.btn:hover{background:var(--accent);border-color:var(--accent)}
+.btn{
+  background:var(--bg3);border:1px solid var(--border);color:var(--text);
+  padding:.5rem 1rem;border-radius:6px;cursor:pointer;
+  font-size:clamp(.75rem,1.2vw,.85rem);transition:all .2s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.btn:active{background:var(--accent);border-color:var(--accent)}
+@media(hover:hover){.btn:hover{background:var(--accent);border-color:var(--accent)}}
 
-@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}}
+/* Full-width section (non-grid) */
+.section-full{max-width:800px}
+
+/* ──────────────────────────────
+   MOBILE BREAKPOINTS
+   ────────────────────────────── */
+
+/* Tablet-ish */
+@media(max-width:900px){
+  body{padding:1rem}
+  .grid2{grid-template-columns:1fr}
+  .grid3{grid-template-columns:1fr}
+  .stat-row{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+}
+
+/* Phone */
+@media(max-width:600px){
+  body{padding:.6rem}
+  h1{font-size:1.2rem}
+  h2{font-size:1rem;margin:1rem 0 .5rem}
+  h2 .chevron{font-size:.65rem}
+
+  .stat-row{grid-template-columns:repeat(2,1fr);gap:.4rem}
+  .stat-card{padding:.6rem;border-radius:8px}
+  .stat-card .val{font-size:1.2rem}
+  .server-header{padding:.6rem .75rem}
+  .server-body{padding:.5rem .6rem}
+  .table-wrap{margin:0 -.3rem;padding:0 .3rem}
+
+  /* Make table cells wrap on very small screens */
+  table{font-size:.7rem;min-width:420px}
+  th,td{padding:.35rem .4rem}
+
+  .recovery{padding:.5rem .6rem;font-size:.62rem}
+  .tag{font-size:.62rem;padding:.1rem .35rem}
+  .port{font-size:.65rem}
+
+  /* Stack sub + recovery side-by-side-ish */
+  .section-full{max-width:100%}
+}
+
+/* Very small */
+@media(max-width:380px){
+  body{padding:.4rem}
+  .stat-row{grid-template-columns:1fr 1fr;gap:.3rem}
+  .stat-card{padding:.45rem}
+  .stat-card .val{font-size:1rem}
+  .stat-card .lbl{font-size:.6rem}
+  table{font-size:.64rem;min-width:380px}
+  th,td{padding:.3rem .35rem}
+}
+
+/* ──────────────────────────────
+   PRINT
+   ────────────────────────────── */
+@media print{
+  body{background:#fff;color:#000;padding:0}
+  .server-section{border:1px solid #ccc;break-inside:avoid}
+  .recovery{display:none}
+}
+
+/* ──────────────────────────────
+   SCROLLBAR STYLING
+   ────────────────────────────── */
+.table-wrap::-webkit-scrollbar{height:4px}
+.table-wrap::-webkit-scrollbar-track{background:transparent}
+.table-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 </style>
 </head>
 <body>
 <div class="container">
+
 <h1>⚡ CFOTH Control Center</h1>
 <p class="sub">All services across Main VPS + Ginnie · Updated <span id="updated"></span></p>
 
 <!-- ===== RESOURCES ===== -->
-<h2>📊 System Resources</h2>
+<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 📊 System Resources</h2>
+<div class="section-content">
 <div class="stat-row">
   <div class="stat-card"><div class="lbl">Main RAM</div><div class="val">7.7/11 GB</div><div class="mem-bar"><div class="mem-fill mem-ok" style="width:70%"></div></div><div class="mem-label"><span>70% used</span><span>4.0 GB free</span></div></div>
   <div class="stat-card"><div class="lbl">Main Disk</div><div class="val y">79%</div><div class="mem-bar"><div class="mem-fill mem-warn" style="width:79%"></div></div><div class="mem-label"><span>152/199 GB</span><span>42 GB free ⚠️</span></div></div>
@@ -76,16 +234,17 @@ tr:hover{background:rgba(99,102,241,0.05)}
   <div class="stat-card"><div class="lbl">Main CPU</div><div class="val a">6</div><div class="lbl">cores</div></div>
   <div class="stat-card"><div class="lbl">Ginnie CPU</div><div class="val a">2</div><div class="lbl">cores</div></div>
 </div>
+</div>
 
 <!-- ===== MAIN VPS ===== -->
-<h2>🖥 Main VPS — 185.218.125.121 (Contabo)</h2>
-
+<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 🖥 Main VPS — 185.218.125.121 (Contabo)</h2>
+<div class="section-content">
 <div class="grid2">
   <!-- Core Services -->
   <div class="server-section">
     <div class="server-header"><h3>🔧 Core Services</h3><span class="tag tag-main">MAIN</span></div>
     <div class="server-body">
-      <table>
+      <div class="table-wrap"><table>
         <tr><th>Service</th><th>Port</th><th>Status</th><th>Memory</th></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Hermes Agent Gateway</td><td class="port">8642</td><td>online</td><td>466 MB</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>vibe-trading MCP</td><td class="port">—</td><td>online</td><td>216 MB</td></tr>
@@ -95,7 +254,7 @@ tr:hover{background:rgba(99,102,241,0.05)}
         <tr class="status-online"><td><span class="status-dot"></span>Redis (System)</td><td class="port">6379</td><td>online</td><td>—</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Ginnie SSH Tunnel (Ollama)</td><td class="port">11434</td><td>online</td><td>6 MB</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>PM2 Daemon</td><td class="port">—</td><td>online</td><td>54 MB</td></tr>
-      </table>
+      </table></div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
 <code>ssh -i ~/.ssh/hermes_key root@185.218.125.121</code>
@@ -109,13 +268,13 @@ tr:hover{background:rgba(99,102,241,0.05)}
   <div class="server-section">
     <div class="server-header"><h3>🎓 Sasin EMBA Platform</h3><span class="tag tag-main">MAIN</span></div>
     <div class="server-body">
-      <table>
+      <div class="table-wrap"><table>
         <tr><th>Service</th><th>URL</th><th>Status</th><th>Memory</th></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Hub Server</td><td class="port">sasin.cfoth.ai</td><td>online</td><td>54 MB</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Capture Server</td><td class="port">capture.sasin.cfoth.ai</td><td>online</td><td>73 MB</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>2nd Brain Server</td><td class="port">brain (8400)</td><td>online</td><td>42 MB</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Nginx (HTTP/HTTPS)</td><td class="port">80/443</td><td>online</td><td>3 MB</td></tr>
-      </table>
+      </table></div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
 <code>pm2 restart hub-server capture-server brain-server</code>
@@ -130,12 +289,12 @@ Brain API at <code>localhost:8400</code> (proxied at /brain/)
   <div class="server-section">
     <div class="server-header"><h3>🤖 LGIAP (LINE Archive)</h3><span class="tag tag-main">MAIN</span></div>
     <div class="server-body">
-      <table>
+      <div class="table-wrap"><table>
         <tr><th>Service</th><th>Port</th><th>Status</th><th>Memory</th></tr>
         <tr class="status-online"><td><span class="status-dot"></span>LGIAP API</td><td class="port">8085</td><td>online</td><td>78 MB</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>LGIAP Worker (5 proc)</td><td class="port">—</td><td>online</td><td>25 MB</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>PostgreSQL (lgiap DB)</td><td class="port">5432</td><td>online</td><td>—</td></tr>
-      </table>
+      </table></div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
 <code>pm2 restart lgiap-api lgiap-worker</code>
@@ -151,7 +310,7 @@ Worker logs: <code>pm2 logs lgiap-worker</code>
   <div class="server-section">
     <div class="server-header"><h3>📦 Other Services</h3><span class="tag tag-main">MAIN</span></div>
     <div class="server-body">
-      <table>
+      <div class="table-wrap"><table>
         <tr><th>Service</th><th>Port</th><th>Status</th></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Live Assistant Bot</td><td class="port">9000</td><td>online</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Gemini Vision Proxy</td><td class="port">8499</td><td>online</td></tr>
@@ -161,7 +320,7 @@ Worker logs: <code>pm2 logs lgiap-worker</code>
         <tr class="status-online"><td><span class="status-dot"></span>Old Dashboard (8888)</td><td class="port">8888</td><td>online</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Old 2nd Brain (8899)</td><td class="port">8899</td><td>online</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Search Server</td><td class="port">5001</td><td>online</td></tr>
-      </table>
+      </table></div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
 <code>pm2 list</code> for PM2-managed services
@@ -170,15 +329,16 @@ Non-PM2: <code>ps aux | grep python3</code> then restart manually
     </div>
   </div>
 </div>
+</div>
 
 <!-- ===== GINNIE VPS ===== -->
-<h2>🟠 Ginnie VPS — 72.60.43.17 (Hostinger)</h2>
-
+<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 🟠 Ginnie VPS — 72.60.43.17 (Hostinger)</h2>
+<div class="section-content">
 <div class="grid2">
   <div class="server-section">
     <div class="server-header"><h3>🐳 Docker Containers</h3><span class="tag tag-ginnie">GINNIE</span></div>
     <div class="server-body">
-      <table>
+      <div class="table-wrap"><table>
         <tr><th>Container</th><th>Port</th><th>Status</th></tr>
         <tr class="status-online"><td><span class="status-dot"></span>OpenClaw (Bot Gateway)</td><td class="port">18789</td><td>23h up</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Traefik (Reverse Proxy)</td><td class="port">80/443</td><td>9d up</td></tr>
@@ -187,7 +347,7 @@ Non-PM2: <code>ps aux | grep python3</code> then restart manually
         <tr class="status-online"><td><span class="status-dot"></span>MT5 VNC</td><td class="port">6901</td><td>5w up</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>VerityTech</td><td class="port">—</td><td>4w up</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Trading Agents Web</td><td class="port">—</td><td>4w up</td></tr>
-      </table>
+      </table></div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
 <code>ssh -i ~/.ssh/ginnie-recovery root@72.60.43.17</code>
@@ -201,12 +361,12 @@ Non-PM2: <code>ps aux | grep python3</code> then restart manually
   <div class="server-section">
     <div class="server-header"><h3>🧠 Ollama + AI</h3><span class="tag tag-ginnie">GINNIE</span></div>
     <div class="server-body">
-      <table>
+      <div class="table-wrap"><table>
         <tr><th>Model</th><th>Size</th><th>Purpose</th></tr>
         <tr class="status-online"><td><span class="status-dot"></span>bge-m3</td><td>1.2 GB</td><td>LGIAP embeddings (via tunnel :11434)</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>qwen2.5:3b</td><td>1.9 GB</td><td>General LLM</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>nomic-embed-text</td><td>274 MB</td><td>Alternative embeddings</td></tr>
-      </table>
+      </table></div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
 On Ginnie: <code>systemctl restart ollama</code>
@@ -220,14 +380,14 @@ Test: <code>curl http://127.0.0.1:11434/api/tags</code>
   <div class="server-section">
     <div class="server-header"><h3>📈 Trading Systems</h3><span class="tag tag-trade">TRADE</span></div>
     <div class="server-body">
-      <table>
+      <div class="table-wrap"><table>
         <tr><th>Service</th><th>Status</th></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Oracle Maw Orchestrator</td><td>online</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Oracle Memory API</td><td>online</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Freqtrade Dashboard</td><td>online</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Freqtrade Web Dashboard</td><td>online</td></tr>
         <tr class="status-online"><td><span class="status-dot"></span>Freqtrade News Monitor</td><td>online</td></tr>
-      </table>
+      </table></div>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
 <code>systemctl restart freqtrade-dashboard freqtrade-webdash freqtrade-news-monitor</code>
@@ -239,32 +399,39 @@ Test: <code>curl http://127.0.0.1:11434/api/tags</code>
   <div class="server-section">
     <div class="server-header"><h3>⏰ Cron Jobs (Ginnie)</h3><span class="tag tag-ginnie">GINNIE</span></div>
     <div class="server-body">
-      <table>
+      <div class="table-wrap"><table>
         <tr><th>Schedule</th><th>Job</th></tr>
         <tr><td>19:00 daily</td><td>Freqtrade NFI Strategy Update</td></tr>
         <tr><td>Every 5 min</td><td>OpenClaw Watchdog</td></tr>
         <tr><td>Every 5 min</td><td>Cross-Monitor MEW</td></tr>
-      </table>
+      </table></div>
     </div>
   </div>
 </div>
+</div>
 
 <!-- ===== CRON JOBS (Main VPS) ===== -->
-<h2>⏰ Cron Jobs — Main VPS</h2>
-<div class="server-section" style="max-width:800px">
+<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> ⏰ Cron Jobs — Main VPS</h2>
+<div class="section-content">
+<div class="section-full">
+<div class="server-section">
   <div class="server-header"><h3>Hermes-Managed Cron</h3></div>
   <div class="server-body">
-    <table>
+    <div class="table-wrap"><table>
       <tr><th>Job</th><th>Schedule</th><th>Runs</th></tr>
       <tr class="status-online"><td><span class="status-dot"></span>Portfolio Grid Monitor</td><td>Every 30m</td><td>1,902</td></tr>
       <tr class="status-online"><td><span class="status-dot"></span>Sasin Upload Watchdog</td><td>—</td><td>active</td></tr>
-    </table>
+    </table></div>
   </div>
 </div>
+</div>
+</div>
 
-<!-- ===== QUICK RECOVERY COMMANDS ===== -->
-<h2>🚨 Emergency Recovery</h2>
-<div class="server-section" style="max-width:800px">
+<!-- ===== QUICK RECOVERY ===== -->
+<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 🚨 Emergency Recovery</h2>
+<div class="section-content">
+<div class="section-full">
+<div class="server-section">
   <div class="server-body">
     <div class="recovery"><strong>Main VPS full restart:</strong>
 <code>ssh -i ~/.ssh/hermes_key root@185.218.125.121</code>
@@ -287,13 +454,17 @@ Test: <code>curl http://127.0.0.1:11434/api/tags</code>
     </div>
   </div>
 </div>
+</div>
+</div>
 
 <!-- ===== CLEANUP CANDIDATES ===== -->
-<h2>🧹 Cleanup Candidates</h2>
-<div class="server-section" style="max-width:800px">
+<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 🧹 Cleanup Candidates</h2>
+<div class="section-content">
+<div class="section-full">
+<div class="server-section">
   <div class="server-header"><h3>Items to Review</h3></div>
   <div class="server-body">
-    <table>
+    <div class="table-wrap"><table>
       <tr><th>Server</th><th>Item</th><th>Size</th><th>Risk</th></tr>
       <tr><td>Main</td><td>Old 2nd Brain (port 8899)</td><td>—</td><td>⚠️ Verify first</td></tr>
       <tr><td>Main</td><td>Old Dashboard server.py (port 8888)</td><td>—</td><td>⚠️ Verify first</td></tr>
@@ -304,8 +475,10 @@ Test: <code>curl http://127.0.0.1:11434/api/tags</code>
       <tr><td>Ginnie</td><td>/home/oracle</td><td>3.6 GB</td><td>⚠️ Unknown contents</td></tr>
       <tr><td>Ginnie</td><td>/root/ghq</td><td>1.1 GB</td><td>⚠️ Git cache?</td></tr>
       <tr><td>Ginnie</td><td>Freqtrade #2 container</td><td>—</td><td>⚠️ Two instances</td></tr>
-    </table>
+    </table></div>
   </div>
+</div>
+</div>
 </div>
 
 </div>
