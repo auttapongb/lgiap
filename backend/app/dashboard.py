@@ -135,13 +135,13 @@ async def dashboard(group: str = Query(None), relevance: str = Query(None)):
             media_html = f'<a href="/media/{safe_group}/videos/{mid}_video.mp4" target="_blank" class="drive-link" onclick="event.stopPropagation()">▶️ Watch video</a>'
         
         msg_rows += f'''<tr class="msg-row" data-id="{mid}" {thread_attr} onclick="openThread({thread_id or 'null'})">
-            <td class="time-col">{date_str}<br>{time_str}</td>
-            <td class="icon-col">{icon}</td>
-            <td class="user-col">{user_html}</td>
-            <td class="type-col"><span class="type-badge">{mtype}</span></td>
-            <td class="rating-col">{badge}{topic_html}</td>
-            <td class="group-col" title="{gname}">{gname or gid[:12]}</td>
-            <td class="text-col">{display_text}{media_html}</td>
+            <td class="time-col" data-col="0">{date_str}<br>{time_str}</td>
+            <td class="icon-col" data-col="1">{icon}</td>
+            <td class="user-col" data-col="2">{user_html}</td>
+            <td class="type-col" data-col="3"><span class="type-badge">{mtype}</span></td>
+            <td class="rating-col" data-col="4">{badge}{topic_html}</td>
+            <td class="group-col" data-col="5" title="{gname}">{gname or gid[:12]}</td>
+            <td class="text-col" data-col="6">{display_text}{media_html}</td>
         </tr>'''
     
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>LGIAP Archive</title>
@@ -174,8 +174,15 @@ body{{font-family:-apple-system,system-ui,sans-serif;background:#0f172a;color:#e
 /* ── MAIN CONTENT ── */
 #main{{flex:1;overflow-y:auto;overflow-x:auto;padding:.5rem 1rem;-webkit-overflow-scrolling:touch}}
 table{{width:100%;border-collapse:collapse;font-size:.75rem;min-width:700px}}
-th{{background:#1e293b;padding:.4rem .5rem;text-align:left;color:#94a3b8;position:sticky;top:0;z-index:1}}
+th{{background:#1e293b;padding:.4rem .5rem;text-align:left;color:#94a3b8;position:sticky;top:0;z-index:1;cursor:pointer;user-select:none;transition:color .15s}}
+th:hover{{color:#e2e8f0}}
+th .col-hint{{font-size:.55rem;opacity:.4;margin-left:2px}}
+th.shrunk{{color:#6366f1;font-size:.7rem}}
+th.shrunk .col-hint{{opacity:1}}''
 td{{padding:.3rem .5rem;border-bottom:1px solid #1e293b}}
+td.shrunk{{padding:0;max-width:0;overflow:hidden;border-bottom-color:transparent}}
+td.shrunk *{{display:none}}
+td.shrunk .type-badge{{display:none}}
 .msg-row{{cursor:pointer;transition:background .15s}}
 .msg-row:hover{{background:rgba(99,102,241,.12)}}
 .msg-row.highlight{{background:rgba(56,189,248,.15);border-left:3px solid #38bdf8}}
@@ -268,7 +275,7 @@ td{{padding:.3rem .5rem;border-bottom:1px solid #1e293b}}
 
 <div id="main">
 <table>
-<thead><tr><th>Time</th><th></th><th>User</th><th>Type</th><th>Rating</th><th>Group</th><th>Content</th></tr></thead>
+<thead><tr><th data-col="0" onclick="toggleCol(0)" title="Click to shrink">🕐<span class="col-hint">↔</span></th><th data-col="1" onclick="toggleCol(1)" title="Click to shrink"><span class="col-hint">↔</span></th><th data-col="2" onclick="toggleCol(2)" title="Click to shrink">👤<span class="col-hint">↔</span></th><th data-col="3" onclick="toggleCol(3)" title="Click to shrink">Type<span class="col-hint">↔</span></th><th data-col="4" onclick="toggleCol(4)" title="Click to shrink">⭐<span class="col-hint">↔</span></th><th data-col="5" onclick="toggleCol(5)" title="Click to shrink">Group<span class="col-hint">↔</span></th><th data-col="6" onclick="toggleCol(6)" title="Click to shrink">Content<span class="col-hint">↔</span></th></tr></thead>
 <tbody>{msg_rows}</tbody>
 </table>
 </div>
@@ -289,4 +296,6 @@ function closeDropdowns(){{document.getElementById('threads-dropdown').classList
 async function openThread(tid){{if(!tid)return;closeDropdowns();document.getElementById('tpanel').classList.add('open');document.getElementById('overlay').style.display='block';document.getElementById('t-content').innerHTML='<p class="empty">Loading...</p>';try{{const r=await fetch('/api/thread/'+tid);const d=await r.json();if(d.error){{document.getElementById('t-content').innerHTML='<p style=color:#ef4444>'+d.error+'</p>';return}}const t=d.thread;document.getElementById('t-title').textContent='🧵 '+(t.topic||t.title||'Thread');let h='<div style=color:#94a3b8;font-size:.7rem;margin-bottom:.5rem>'+t.count+' msgs · '+(t.started||'?').substring(0,16)+'</div>';d.messages.forEach(m=>{{h+='<div class=t-msg><span class=tm>'+(m.time||'').substring(11,16)+'</span> <strong>'+m.name+'</strong><br>'+((m.text||'['+m.type+']')).substring(0,250)+'</div>'}});document.getElementById('t-content').innerHTML=h;document.querySelectorAll('.msg-row').forEach(r=>r.classList.remove('highlight'));document.querySelectorAll('.msg-row[data-thread="'+tid+'"]').forEach(r=>r.classList.add('highlight'))}}catch(e){{document.getElementById('t-content').innerHTML='<p style=color:#ef4444>'+e+'</p>'}}}}
 
 function closeThread(){{document.getElementById('tpanel').classList.remove('open');document.querySelectorAll('.msg-row').forEach(r=>r.classList.remove('highlight'));closeDropdowns()}}
+
+function toggleCol(n){{document.querySelectorAll('[data-col='+n+']').forEach(el=>el.classList.toggle('shrunk'))}}
 </script></body></html>'''
