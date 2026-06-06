@@ -174,11 +174,10 @@ body{{font-family:-apple-system,system-ui,sans-serif;background:#0f172a;color:#e
 /* ── MAIN CONTENT ── */
 #main{{flex:1;overflow-y:auto;overflow-x:auto;padding:.5rem 1rem;-webkit-overflow-scrolling:touch}}
 table{{width:100%;border-collapse:collapse;font-size:.75rem;min-width:700px}}
-th{{background:#1e293b;padding:.4rem .5rem;text-align:left;color:#94a3b8;position:sticky;top:0;z-index:1;cursor:pointer;user-select:none;transition:color .15s}}
-th:hover{{color:#e2e8f0}}
-th .col-hint{{font-size:.55rem;opacity:.4;margin-left:2px}}
-th.shrunk{{color:#6366f1;font-size:.7rem}}
-th.shrunk .col-hint{{opacity:1}}''
+th{{background:#1e293b;padding:.25rem .3rem;text-align:left;color:#94a3b8;position:sticky;top:0;z-index:1}}
+.col-btn{{background:none;border:none;color:#94a3b8;cursor:pointer;font-size:.72rem;padding:.2rem .35rem;border-radius:4px;font-family:inherit;white-space:nowrap;width:100%;text-align:left;transition:all .15s}}
+.col-btn:hover{{color:#e2e8f0;background:rgba(99,102,241,.15)}}
+.col-btn.shrunk{{color:#6366f1;background:rgba(99,102,241,.2)}}
 td{{padding:.3rem .5rem;border-bottom:1px solid #1e293b}}
 td.shrunk{{display:none}}
 .msg-row{{cursor:pointer;transition:background .15s}}
@@ -273,7 +272,7 @@ td.shrunk{{display:none}}
 
 <div id="main">
 <table>
-<thead><tr><th data-col="0" title="Click to shrink" onclick="var n=this.getAttribute('data-col');var a=document.querySelectorAll('[data-col='+n+']');for(var i=0;i<a.length;i++)a[i].classList.toggle('shrunk')">🕐<span class="col-hint">↔</span></th><th data-col="1" title="Click to shrink" onclick="var n=this.getAttribute('data-col');var a=document.querySelectorAll('[data-col='+n+']');for(var i=0;i<a.length;i++)a[i].classList.toggle('shrunk')"><span class="col-hint">↔</span></th><th data-col="2" title="Click to shrink" onclick="var n=this.getAttribute('data-col');var a=document.querySelectorAll('[data-col='+n+']');for(var i=0;i<a.length;i++)a[i].classList.toggle('shrunk')">👤<span class="col-hint">↔</span></th><th data-col="3" title="Click to shrink" onclick="var n=this.getAttribute('data-col');var a=document.querySelectorAll('[data-col='+n+']');for(var i=0;i<a.length;i++)a[i].classList.toggle('shrunk')">Type<span class="col-hint">↔</span></th><th data-col="4" title="Click to shrink" onclick="var n=this.getAttribute('data-col');var a=document.querySelectorAll('[data-col='+n+']');for(var i=0;i<a.length;i++)a[i].classList.toggle('shrunk')">⭐<span class="col-hint">↔</span></th><th data-col="5" title="Click to shrink" onclick="var n=this.getAttribute('data-col');var a=document.querySelectorAll('[data-col='+n+']');for(var i=0;i<a.length;i++)a[i].classList.toggle('shrunk')">Group<span class="col-hint">↔</span></th><th data-col="6" title="Click to shrink" onclick="var n=this.getAttribute('data-col');var a=document.querySelectorAll('[data-col='+n+']');for(var i=0;i<a.length;i++)a[i].classList.toggle('shrunk')">Content<span class="col-hint">↔</span></th></tr></thead>
+<thead><tr><th data-col="0"><button class="col-btn" data-col="0">🕐</button></th><th data-col="1"><button class="col-btn" data-col="1">↔</button></th><th data-col="2"><button class="col-btn" data-col="2">👤</button></th><th data-col="3"><button class="col-btn" data-col="3">Type</button></th><th data-col="4"><button class="col-btn" data-col="4">⭐</button></th><th data-col="5"><button class="col-btn" data-col="5">Group</button></th><th data-col="6"><button class="col-btn" data-col="6">Content</button></th></tr></thead>
 <tbody>{msg_rows}</tbody>
 </table>
 </div>
@@ -294,4 +293,6 @@ function closeDropdowns(){{document.getElementById('threads-dropdown').classList
 async function openThread(tid){{if(!tid)return;closeDropdowns();document.getElementById('tpanel').classList.add('open');document.getElementById('overlay').style.display='block';document.getElementById('t-content').innerHTML='<p class="empty">Loading...</p>';try{{const r=await fetch('/api/thread/'+tid);const d=await r.json();if(d.error){{document.getElementById('t-content').innerHTML='<p style=color:#ef4444>'+d.error+'</p>';return}}const t=d.thread;document.getElementById('t-title').textContent='🧵 '+(t.topic||t.title||'Thread');let h='<div style=color:#94a3b8;font-size:.7rem;margin-bottom:.5rem>'+t.count+' msgs · '+(t.started||'?').substring(0,16)+'</div>';d.messages.forEach(m=>{{h+='<div class=t-msg><span class=tm>'+(m.time||'').substring(11,16)+'</span> <strong>'+m.name+'</strong><br>'+((m.text||'['+m.type+']')).substring(0,250)+'</div>'}});document.getElementById('t-content').innerHTML=h;document.querySelectorAll('.msg-row').forEach(r=>r.classList.remove('highlight'));document.querySelectorAll('.msg-row[data-thread="'+tid+'"]').forEach(r=>r.classList.add('highlight'))}}catch(e){{document.getElementById('t-content').innerHTML='<p style=color:#ef4444>'+e+'</p>'}}}}
 
 function closeThread(){{document.getElementById('tpanel').classList.remove('open');document.querySelectorAll('.msg-row').forEach(r=>r.classList.remove('highlight'));closeDropdowns()}}
+
+var btns=document.querySelectorAll('.col-btn');for(var i=0;i<btns.length;i++){{btns[i].addEventListener('click',function(){{var n=this.getAttribute('data-col');this.classList.toggle('shrunk');document.querySelectorAll('td[data-col=\"'+n+'\"]').forEach(function(td){{td.classList.toggle('shrunk')}})}})}}
 </script></body></html>'''
