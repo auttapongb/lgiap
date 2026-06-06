@@ -144,78 +144,149 @@ async def dashboard(group: str = Query(None), relevance: str = Query(None)):
             <td class="text-col">{display_text}{media_html}</td>
         </tr>'''
     
-    return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LGIAP Archive</title>
+    return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>LGIAP Archive</title>
 <style>
 *{{margin:0;padding:0;box-sizing:border-box}}
-body{{font-family:-apple-system,system-ui,sans-serif;background:#0f172a;color:#e2e8f0;display:flex;height:100vh;overflow:hidden}}
-#sidebar{{width:280px;background:#1a2332;border-right:1px solid #334155;padding:1rem;overflow-y:auto;flex-shrink:0}}
-#main{{flex:1;padding:1rem;overflow-y:auto}}
-h2{{font-size:.9rem;color:#38bdf8;margin-bottom:.5rem}}
-select,button{{background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:.4rem .8rem;border-radius:6px;font-size:.75rem;cursor:pointer;width:100%;margin-bottom:.3rem}}
-button{{background:#6366f1;border-color:#6366f1;margin-top:.3rem}}
-.stats{{display:grid;grid-template-columns:1fr 1fr;gap:.3rem;margin:.5rem 0}}
-.scard{{background:#0f172a;padding:.5rem;border-radius:6px;text-align:center;font-size:.7rem}}
-.scard .n{{font-size:1rem;font-weight:700;color:#4ade80}}
-.sec{{color:#94a3b8;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;margin:1rem 0 .2rem}}
-.thread-item{{background:#0f172a;padding:.5rem;margin:.2rem 0;border-radius:6px;cursor:pointer;border-left:3px solid transparent;font-size:.7rem;transition:all .15s}}
-.thread-item:hover{{border-left-color:#6366f1;background:#1e293b}}
-.ti-time{{color:#64748b;font-size:.6rem;margin-right:.3rem}}
-.ti-title{{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
-.ti-count{{color:#38bdf8;font-size:.6rem;float:right}}
-.empty{{color:#64748b;font-size:.7rem;padding:1rem;text-align:center}}
-table{{width:100%;border-collapse:collapse;font-size:.78rem}}
+body{{font-family:-apple-system,system-ui,sans-serif;background:#0f172a;color:#e2e8f0;display:flex;flex-direction:column;height:100vh;overflow:hidden;-webkit-text-size-adjust:100%}}
+
+/* ── TOP NAV ── */
+#topbar{{
+  background:#1a2332;border-bottom:1px solid #334155;padding:.6rem 1rem;
+  display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;
+  flex-shrink:0;z-index:10;
+}}
+#topbar h2{{font-size:.85rem;color:#38bdf8;margin:0;white-space:nowrap;flex-shrink:0}}
+.top-controls{{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;flex:1;min-width:0}}
+.top-controls select,.top-controls button{{
+  background:#0f172a;border:1px solid #334155;color:#e2e8f0;
+  padding:.35rem .6rem;border-radius:6px;font-size:.72rem;cursor:pointer;
+}}
+.top-controls button{{background:#6366f1;border-color:#6366f1;white-space:nowrap}}
+.top-controls button:hover{{background:#7c3aed}}
+
+/* Stats row in topbar */
+.top-stats{{display:flex;gap:.8rem;font-size:.68rem;color:#94a3b8;white-space:nowrap;align-items:center}}
+.top-stats b{{color:#4ade80;font-weight:700}}
+
+/* Mobile: stats hidden by default, toggle with .expanded */
+#stats-toggle{{display:none;background:none;border:none;color:#38bdf8;font-size:.75rem;cursor:pointer;padding:.3rem .5rem}}
+
+/* ── MAIN CONTENT ── */
+#main{{flex:1;overflow-y:auto;overflow-x:auto;padding:.5rem 1rem;-webkit-overflow-scrolling:touch}}
+table{{width:100%;border-collapse:collapse;font-size:.75rem;min-width:700px}}
 th{{background:#1e293b;padding:.4rem .5rem;text-align:left;color:#94a3b8;position:sticky;top:0;z-index:1}}
 td{{padding:.3rem .5rem;border-bottom:1px solid #1e293b}}
 .msg-row{{cursor:pointer;transition:background .15s}}
 .msg-row:hover{{background:rgba(99,102,241,.12)}}
 .msg-row.highlight{{background:rgba(56,189,248,.15);border-left:3px solid #38bdf8}}
-.time-col{{font-family:monospace;font-size:.65rem;color:#64748b;white-space:nowrap;width:70px}}
-.icon-col{{width:25px;text-align:center}}
-.user-col{{color:#e2e8f0;font-size:.7rem;min-width:130px;white-space:nowrap}}
-.u-avatar{{width:22px;height:22px;border-radius:50%;vertical-align:middle;margin-right:4px;object-fit:cover}}
-.u-fallback{{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#6366f1;color:#fff;font-size:.65rem;font-weight:700;margin-right:4px;vertical-align:middle}}
+.time-col{{font-family:monospace;font-size:.62rem;color:#64748b;white-space:nowrap;width:68px}}
+.icon-col{{width:24px;text-align:center;font-size:.8rem}}
+.user-col{{color:#e2e8f0;font-size:.68rem;min-width:120px;white-space:nowrap}}
+.u-avatar{{width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:3px;object-fit:cover}}
+.u-fallback{{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#6366f1;color:#fff;font-size:.6rem;font-weight:700;margin-right:3px;vertical-align:middle}}
 .u-name{{vertical-align:middle}}
-.type-col{{width:55px}}
-.rating-col{{width:90px;font-size:.7rem;white-space:nowrap}}
-.group-col{{color:#38bdf8;font-size:.7rem;width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
-.type-badge{{font-size:.6rem;background:#273449;padding:1px 5px;border-radius:3px;color:#64748b}}
-.text-col{{max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
-.msg-thumb{{max-width:80px;max-height:50px;border-radius:4px;margin-top:3px;cursor:default;border:1px solid #334155;display:block}}
-.drive-link{{color:#4ade80;font-size:.65rem;text-decoration:none}}
+.type-col{{width:50px;text-align:center}}
+.rating-col{{width:85px;font-size:.68rem;white-space:nowrap}}
+.group-col{{color:#38bdf8;font-size:.68rem;width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+.type-badge{{font-size:.58rem;background:#273449;padding:1px 4px;border-radius:3px;color:#64748b}}
+.text-col{{max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.7rem}}
+.msg-thumb{{max-width:70px;max-height:45px;border-radius:4px;margin-top:2px;cursor:default;border:1px solid #334155;display:block}}
+.drive-link{{color:#4ade80;font-size:.62rem;text-decoration:none}}
 .drive-link:hover{{text-decoration:underline}}
-.topic-tag{{font-size:.6rem;background:rgba(56,189,248,.12);color:#38bdf8;padding:1px 5px;border-radius:3px;margin-left:3px}}
-#tpanel{{display:none;position:fixed;right:0;top:0;width:400px;height:100vh;background:#1e293b;border-left:1px solid #334155;padding:1.5rem;overflow-y:auto;z-index:100;box-shadow:-4px 0 20px rgba(0,0,0,.3)}}
+.topic-tag{{font-size:.58rem;background:rgba(56,189,248,.12);color:#38bdf8;padding:1px 4px;border-radius:3px;margin-left:2px}}
+
+/* Threads dropdown panel */
+#threads-btn{{background:#1e293b;border:1px solid #334155;color:#38bdf8;font-size:.72rem;border-radius:6px;padding:.35rem .6rem;cursor:pointer}}
+#threads-btn:hover{{background:#273449}}
+#threads-dropdown{{display:none;position:absolute;top:100%;right:1rem;background:#1a2332;border:1px solid #334155;border-radius:8px;padding:.5rem;max-height:300px;overflow-y:auto;min-width:220px;z-index:50;box-shadow:0 4px 16px rgba(0,0,0,.4)}}
+#threads-dropdown.open{{display:block}}
+.thread-item{{padding:.4rem .5rem;margin:.1rem 0;border-radius:4px;cursor:pointer;border-left:3px solid transparent;font-size:.68rem;transition:all .15s}}
+.thread-item:hover{{border-left-color:#6366f1;background:#0f172a}}
+.ti-time{{color:#64748b;font-size:.6rem;margin-right:.3rem}}
+.ti-title{{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+.ti-count{{color:#38bdf8;font-size:.6rem;float:right}}
+.empty{{color:#64748b;font-size:.68rem;padding:.5rem;text-align:center}}
+
+/* Thread detail panel */
+#tpanel{{display:none;position:fixed;right:0;top:0;width:min(400px,100vw);height:100vh;background:#1e293b;border-left:1px solid #334155;padding:1.5rem;overflow-y:auto;z-index:100;box-shadow:-4px 0 20px rgba(0,0,0,.3)}}
 #tpanel.open{{display:block}}
-#tclose{{position:absolute;top:1rem;right:1rem;background:none;border:none;color:#94a3b8;font-size:1.2rem;cursor:pointer}}
-#tpanel h3{{color:#38bdf8;margin-bottom:.5rem;font-size:.9rem}}
-.t-msg{{background:#0f172a;padding:.5rem .7rem;margin:.3rem 0;border-radius:6px;border-left:3px solid #6366f1;font-size:.75rem}}
-.t-msg .tm{{color:#64748b;font-size:.6rem}}
+#tclose{{position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:#94a3b8;font-size:1.3rem;cursor:pointer;padding:.3rem .5rem;border-radius:4px}}
+#tclose:hover{{color:#fff;background:#334155}}
+#tpanel h3{{color:#38bdf8;margin-bottom:.5rem;font-size:.85rem}}
+.t-msg{{background:#0f172a;padding:.5rem .7rem;margin:.3rem 0;border-radius:6px;border-left:3px solid #6366f1;font-size:.72rem}}
+.t-msg .tm{{color:#64748b;font-size:.58rem}}
+
+/* ── MOBILE ── */
+@media(max-width:768px){{
+  #topbar{{padding:.4rem .5rem;gap:.3rem}}
+  #topbar h2{{font-size:.75rem}}
+  .top-stats{{display:none}}
+  #stats-toggle{{display:inline-block}}
+  .top-stats.expanded{{display:flex;width:100%;gap:.5rem;font-size:.65rem;padding:.2rem 0 .3rem}}
+  .top-controls select,.top-controls button,#threads-btn{{font-size:.68rem;padding:.3rem .5rem;flex:1;min-width:80px}}
+  #main{{padding:.3rem .4rem}}
+  table{{font-size:.68rem;min-width:580px}}
+  th,td{{padding:.25rem .35rem}}
+  .time-col{{width:55px;font-size:.58rem}}
+  .icon-col{{width:20px}}
+  .user-col{{min-width:90px;font-size:.62rem}}
+  .u-avatar{{width:16px;height:16px}}
+  .u-fallback{{width:16px;height:16px;font-size:.55rem}}
+  .text-col{{max-width:160px;font-size:.65rem}}
+  .group-col{{width:60px;font-size:.62rem}}
+  .rating-col{{width:70px;font-size:.62rem}}
+  .type-col{{width:40px}}
+  #tpanel{{width:100vw}}
+}}
+@media(max-width:420px){{
+  .top-controls{{flex-direction:column;width:100%}}
+  .top-controls select,.top-controls button,#threads-btn{{width:100%}}
+  table{{font-size:.62rem;min-width:480px}}
+  .text-col{{max-width:100px}}
+}}
 </style></head><body>
-<div id="sidebar">
-  <h2>🧵 LGIAP Archive</h2>
-  <div class="stats">
-    <div class="scard"><div class="n">{total}</div>messages</div>
-    <div class="scard"><div class="n">{groups_cnt}</div>groups</div>
-    <div class="scard"><div class="n">{users_cnt}</div>users</div>
-    <div class="scard"><div class="n">{useful_cnt}</div>⭐ useful</div>
-    <div class="scard"><div class="n" style="color:#4ade80">✅</div>sync</div>
-    <div class="scard"><div class="n" style="color:#f59e0b">🤖</div>AI active</div>
+<div id="topbar">
+  <h2>🧵 LGIAP</h2>
+  <div class="top-controls">
+    <select id="grp" onchange="filt()">{group_options}</select>
+    <select id="rel" onchange="filt()"><option value="">All Messages</option><option value="useful" {rel_sel}>⭐ Useful Only (2+)</option></select>
+    <button onclick="filt()">🔄</button>
+    <button id="threads-btn" onclick="toggleThreads()" title="Threads">🧵 Threads</button>
   </div>
-  <select id="grp" onchange="filt()">{group_options}</select>
-  <select id="rel" onchange="filt()"><option value="">All Messages</option><option value="useful" {rel_sel}>⭐ Useful Only (2+)</option></select>
-  <button onclick="filt()">🔄 Apply Filters</button>
-  <div class="sec">Recent Threads</div>
+  <button id="stats-toggle" onclick="toggleStats()">📊</button>
+  <div class="top-stats" id="top-stats">
+    <span><b>{total}</b> msgs</span>
+    <span><b>{groups_cnt}</b> grp</span>
+    <span><b>{users_cnt}</b> usr</span>
+    <span><b>{useful_cnt}</b> ⭐</span>
+  </div>
+</div>
+
+<div id="threads-dropdown">
   {thread_html}
 </div>
+
 <div id="main">
 <table>
 <thead><tr><th>Time</th><th></th><th>User</th><th>Type</th><th>Rating</th><th>Group</th><th>Content</th></tr></thead>
 <tbody>{msg_rows}</tbody>
 </table>
 </div>
+
 <div id="tpanel"><button id="tclose" onclick="closeThread()">✕</button><h3 id="t-title">🧵 Thread</h3><div id="t-content"><p class="empty">Click a message or thread to view...</p></div></div>
+
+<div id="overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:40" onclick="closeThread();closeDropdowns()"></div>
+
 <script>
 function filt(){{const g=document.getElementById('grp').value,r=document.getElementById('rel').value;let u='/';const p=[];if(g)p.push('group='+encodeURIComponent(g));if(r)p.push('relevance='+r);if(p.length)u+='?'+p.join('&');location.href=u}}
-async function openThread(tid){{if(!tid)return;document.getElementById('tpanel').classList.add('open');document.getElementById('t-content').innerHTML='<p class="empty">Loading...</p>';try{{const r=await fetch('/api/thread/'+tid);const d=await r.json();if(d.error){{document.getElementById('t-content').innerHTML='<p style=color:#ef4444>'+d.error+'</p>';return}}const t=d.thread;document.getElementById('t-title').textContent='🧵 '+(t.topic||t.title||'Thread');let h='<div style=color:#94a3b8;font-size:.7rem;margin-bottom:.5rem>'+t.count+' msgs · '+(t.started||'?').substring(0,16)+'</div>';d.messages.forEach(m=>{{h+='<div class=t-msg><span class=tm>'+(m.time||'').substring(11,16)+'</span> <strong>'+m.name+'</strong><br>'+((m.text||'['+m.type+']')).substring(0,250)+'</div>'}});document.getElementById('t-content').innerHTML=h;document.querySelectorAll('.msg-row').forEach(r=>r.classList.remove('highlight'));document.querySelectorAll('.msg-row[data-thread="'+tid+'"]').forEach(r=>r.classList.add('highlight'))}}catch(e){{document.getElementById('t-content').innerHTML='<p style=color:#ef4444>'+e+'</p>'}}}}
-function closeThread(){{document.getElementById('tpanel').classList.remove('open');document.querySelectorAll('.msg-row').forEach(r=>r.classList.remove('highlight'))}}
+
+function toggleThreads(){{const d=document.getElementById('threads-dropdown');d.classList.toggle('open');if(d.classList.contains('open')){{document.getElementById('overlay').style.display='block'}}else{{closeDropdowns()}}}}
+
+function toggleStats(){{const s=document.getElementById('top-stats');s.classList.toggle('expanded')}}
+
+function closeDropdowns(){{document.getElementById('threads-dropdown').classList.remove('open');document.getElementById('overlay').style.display='none'}}
+
+async function openThread(tid){{if(!tid)return;closeDropdowns();document.getElementById('tpanel').classList.add('open');document.getElementById('overlay').style.display='block';document.getElementById('t-content').innerHTML='<p class="empty">Loading...</p>';try{{const r=await fetch('/api/thread/'+tid);const d=await r.json();if(d.error){{document.getElementById('t-content').innerHTML='<p style=color:#ef4444>'+d.error+'</p>';return}}const t=d.thread;document.getElementById('t-title').textContent='🧵 '+(t.topic||t.title||'Thread');let h='<div style=color:#94a3b8;font-size:.7rem;margin-bottom:.5rem>'+t.count+' msgs · '+(t.started||'?').substring(0,16)+'</div>';d.messages.forEach(m=>{{h+='<div class=t-msg><span class=tm>'+(m.time||'').substring(11,16)+'</span> <strong>'+m.name+'</strong><br>'+((m.text||'['+m.type+']')).substring(0,250)+'</div>'}});document.getElementById('t-content').innerHTML=h;document.querySelectorAll('.msg-row').forEach(r=>r.classList.remove('highlight'));document.querySelectorAll('.msg-row[data-thread="'+tid+'"]').forEach(r=>r.classList.add('highlight'))}}catch(e){{document.getElementById('t-content').innerHTML='<p style=color:#ef4444>'+e+'</p>'}}}}
+
+function closeThread(){{document.getElementById('tpanel').classList.remove('open');document.querySelectorAll('.msg-row').forEach(r=>r.classList.remove('highlight'));closeDropdowns()}}
 </script></body></html>'''
