@@ -199,9 +199,10 @@ Webhook: <code>https://lgiap.sasin.cfoth.ai/webhook</code>
       <div class="recovery">
 <strong>🔄 Recovery:</strong>
 <code>ssh -i ~/.ssh/ginnie-recovery root@72.60.43.17</code>
-<code>docker ps</code> — check all containers
-<code>docker restart openclaw-cbxv-openclaw-1</code> — restart OpenClaw
-<code>docker restart traefik-traefik-1</code> — restart proxy
+<code>systemctl status hermes-gateway</code> — Ginnie bot
+<code>systemctl restart hermes-gateway</code> — restart bot
+<code>journalctl -u hermes-gateway --no-pager -n 20</code> — logs
+⚠ If port conflict: <code>docker stop openclaw-cbxv-openclaw-1</code> then <code>systemctl restart hermes-gateway</code>
       </div>
     </div>
   </div>
@@ -261,24 +262,189 @@ Main tunnel: <code>ssh -i ~/.ssh/ginnie-recovery -N -L 11434:127.0.0.1:11434 roo
 <div class="section-content">
 <div class="server-section" style="max-width:800px">
   <div class="server-body">
-    <div class="recovery"><strong>Main VPS full restart:</strong>
+    <div class="recovery"><strong>🖥 Babigon (Hermes) — Main VPS 185.218.125.121:</strong>
 <code>ssh -i ~/.ssh/hermes_key root@185.218.125.121</code>
-<code>pm2 restart all</code>
-<code>systemctl reload nginx</code>
+<code>docker ps | grep hermes-bot</code> — check container
+<code>docker restart hermes-bot</code> — restart me
+<small style="color:var(--yellow)">⚠ Port: 8642 (API, 127.0.0.1 only) + 8644. Host networking. If port 18789 is contested → Ginnie conflict.</small>
     </div>
-    <div class="recovery"><strong>Ginnie VPS full restart:</strong>
+    <div class="recovery"><strong>🟠 Ginnie (Hermes Gateway) — Hostinger 72.60.43.17:</strong>
 <code>ssh -i ~/.ssh/ginnie-recovery root@72.60.43.17</code>
-<code>docker restart $(docker ps -q)</code>
-<code>systemctl restart ollama</code>
+<code>systemctl restart hermes-gateway</code> — restart Ginnie bot
+<code>journalctl -u hermes-gateway --no-pager -n 20</code> — logs
+<small style="color:var(--yellow)">⚠ Discord client — no TCP listen port. If port 18789 is hogged by zombie docker-proxy: <code>docker stop openclaw-cbxv-openclaw-1</code></small>
+    </div>
+    <div class="recovery"><strong>🔧 Ginnie port conflict fix:</strong>
+<code>ss -tlnp | grep 18789</code> — who's hogging it?
+<code>docker stop openclaw-cbxv-openclaw-1</code> — free the port
+<code>systemctl restart hermes-gateway</code>
     </div>
     <div class="recovery"><strong>LGIAP quick check:</strong>
 <code>curl https://lgiap.sasin.cfoth.ai/health</code>
-<code>pm2 logs lgiap-worker --lines 10</code>
+<code>pm2 logs lgiap-api --lines 10</code>
+<code>pm2 restart lgiap-api lgiap-worker</code>
     </div>
   </div>
 </div>
 </div>
 
+<!-- ===== PORT MAP ===== -->
+<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 🗺 Port Map (SSOT)</h2>
+<div class="section-content">
+<div class="server-section" style="max-width:800px">
+  <div class="server-body">
+    <div class="table-wrap"><table style="min-width:600px">
+      <tr><th>Port</th><th>VPS</th><th>Service</th><th>Bind</th><th>Notes</th></tr>
+      <tr><td>8642</td><td><span class="tag tag-main">MAIN</span></td><td>Babigon (hermes-gateway)</td><td>127.0.0.1</td><td>API server</td></tr>
+      <tr><td>8644</td><td><span class="tag tag-main">MAIN</span></td><td>Babigon (secondary)</td><td>127.0.0.1</td><td>Internal</td></tr>
+      <tr><td>8400</td><td><span class="tag tag-main">MAIN</span></td><td>brain-server</td><td>0.0.0.0</td><td>Second Brain API</td></tr>
+      <tr><td>8895</td><td><span class="tag tag-main">MAIN</span></td><td>capture-server</td><td>0.0.0.0</td><td>Sasin Capture</td></tr>
+      <tr><td>8897</td><td><span class="tag tag-main">MAIN</span></td><td>upload-server</td><td>0.0.0.0</td><td>Course uploads</td></tr>
+      <tr><td>8081</td><td><span class="tag tag-main">MAIN</span></td><td>hub-server</td><td>0.0.0.0</td><td>Sasin Hub</td></tr>
+      <tr><td>8085</td><td><span class="tag tag-main">MAIN</span></td><td>lgiap-api</td><td>0.0.0.0</td><td>LGIAP backend</td></tr>
+      <tr><td>8499</td><td><span class="tag tag-main">MAIN</span></td><td>gemini-vision</td><td>0.0.0.0</td><td>Gemini proxy</td></tr>
+      <tr><td>8500</td><td><span class="tag tag-main">MAIN</span></td><td>sasin-billing</td><td>0.0.0.0</td><td>Billing API</td></tr>
+      <tr><td>9000</td><td><span class="tag tag-main">MAIN</span></td><td>live-bot</td><td>0.0.0.0</td><td>Trading bot</td></tr>
+      <tr><td>5050</td><td><span class="tag tag-main">MAIN</span></td><td>market-api</td><td>127.0.0.1</td><td>Market data</td></tr>
+      <tr><td>5678</td><td><span class="tag tag-main">MAIN</span></td><td>n8n</td><td>0.0.0.0</td><td>Docker</td></tr>
+      <tr><td>5432</td><td><span class="tag tag-main">MAIN</span></td><td>PostgreSQL</td><td>127.0.0.1</td><td>Main DB</td></tr>
+      <tr><td>5433</td><td><span class="tag tag-main">MAIN</span></td><td>PostgreSQL (n8n)</td><td>127.0.0.1</td><td>n8n DB</td></tr>
+      <tr><td>6379</td><td><span class="tag tag-main">MAIN</span></td><td>Redis</td><td>127.0.0.1</td><td>Cache</td></tr>
+      <tr><td>6380</td><td><span class="tag tag-main">MAIN</span></td><td>Redis (secondary)</td><td>127.0.0.1</td><td>Queue</td></tr>
+      <tr style="border-top:2px solid var(--accent)"><td>18789</td><td><span class="tag tag-ginnie">GINNIE</span></td><td>hermes-gateway</td><td>—</td><td>Discord WS (no TCP listen)</td></tr>
+      <tr><td>11434</td><td><span class="tag tag-ginnie">GINNIE</span></td><td>Ollama</td><td>127.0.0.1</td><td>Tunnel from Main</td></tr>
+      <tr><td>80,443</td><td><span class="tag tag-ginnie">GINNIE</span></td><td>Traefik</td><td>0.0.0.0</td><td>Reverse proxy</td></tr>
+      <tr><td>8080</td><td><span class="tag tag-ginnie">GINNIE</span></td><td>Traefik (alt)</td><td>0.0.0.0</td><td>Dashboard</td></tr>
+      <tr><td>8443</td><td><span class="tag tag-ginnie">GINNIE</span></td><td>Freqtrade (bun)</td><td>0.0.0.0</td><td>Web UI</td></tr>
+    </table></div>
+    <div class="recovery" style="margin-top:.8rem">
+<strong>⚠ Port conflict resolution:</strong>
+<code>ss -tlnp | grep PORT</code> — who's listening?
+Main: <code>pm2 restart NAME</code> or <code>systemctl restart nginx</code>
+Ginnie: <code>docker stop CONTAINER</code> or <code>systemctl restart hermes-gateway</code>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+
+<!-- ===== AGENT MANUAL ===== -->
+<h2 onclick="this.classList.toggle('collapsed')"><span class="chevron">▼</span> 🧠 System Anatomy & Agent Manual <span class="tag tag-live">READ FIRST</span></h2>
+<div class="section-content">
+<div class="server-section" style="max-width:900px">
+  <div class="server-body">
+
+<h3 style="color:var(--accent);margin:0 0 .5rem">⚠ This page is the single source of truth. Babigon + Ginnie: check here BEFORE any task.</h3>
+
+<div class="recovery"><strong>📁 THIS DASHBOARD'S LOCATION:</strong>
+File: <code>/data/lgiap/dashboard.html</code>
+Served by: <code>lgiap-api</code> (PM2, port 8085) → <code>main.py</code> route <code>/control</code> reads <code>../dashboard.html</code>
+Backend: <code>/data/lgiap/backend/main.py</code> | <code>/api/sysinfo</code> endpoint
+To update: edit <code>/data/lgiap/dashboard.html</code> → no restart needed (reads on every request)
+</div>
+
+<div class="recovery"><strong>🔑 SSH KEYS:</strong>
+Main VPS (Contabo): <code>ssh -i /root/.ssh/hermes_key root@185.218.125.121</code>
+Ginnie VPS (Hostinger): <code>ssh -i /root/.ssh/ginnie-recovery root@72.60.43.17</code>
+Babigon runs inside: Docker container <code>hermes-bot</code> on Main VPS (host networking)
+</div>
+
+<div class="recovery"><strong>🌐 NGINX ROUTING (Main VPS):</strong>
+<code>sasin.cfoth.ai</code> → :8081 (hub-server)
+<code>capture.sasin.cfoth.ai</code> → :8895 (capture-server)
+<code>brain.cfoth.ai</code> → :5001 or :8400 (brain-server)
+<code>n8n.brain.cfoth.ai</code> → :5678 (n8n Docker)
+<code>workspace.cfoth.ai</code> → :3000 (Vite, inside hermes-bot container)
+<code>dashboard.cfoth.ai</code> → :8085/control (lgiap-api)
+<code>lgiap.sasin.cfoth.ai</code> → :8085 (lgiap-api, /health /webhook /control)
+<code>ginnie.cfoth.ai</code> → ❌ DNS NXDOMAIN (record missing)
+</div>
+
+<div class="recovery"><strong>📂 KEY FILE PATHS (Main VPS):</strong>
+Babigon config: <code>/root/.hermes/config.yaml</code> (inside hermes-bot container)
+Babigon env: <code>/root/.hermes/.env</code> (DEEPSEEK_API_KEY, DISCORD_TOKEN, etc.)
+LGIAP backend: <code>/data/lgiap/backend/main.py</code> (FastAPI, port 8085)
+LGIAP worker: <code>/data/lgiap/worker.py</code> (message processing)
+LGIAP tests: <code>/data/lgiap/tests/self_test.py</code> (26 tests)
+LGIAP git: <code>github.com/auttapongb/lgiap</code> (no secrets in repo!)
+Sasin Hub: <code>/data/sasin-cfoth-ai/hub_server.py</code> (port 8081)
+Capture: <code>/data/sasin-cfoth-ai/capture_server.py</code> (port 8895)
+Brain: <code>/data/sasin-cfoth-ai/search_server.py</code> (port 8400)
+Upload: <code>/data/sasin-cfoth-ai/upload_server.py</code> (port 8897)
+nginx configs: <code>/etc/nginx/sites-available/</code> → symlinked to <code>/etc/nginx/sites-enabled/</code>
+PM2 ecosystem: <code>pm2 list</code> (5 processes: brain, capture, hub, lgiap-api, lgiap-worker)
+</div>
+
+<div class="recovery"><strong>📂 KEY FILE PATHS (Ginnie VPS — 72.60.43.17):</strong>
+Hermes Gateway config: <code>/root/.hermes/config.yaml</code>
+Hermes Gateway env: <code>/root/.hermes/.env</code>
+Gateway logs: <code>/root/.hermes/logs/gateway.log</code> ← CHECK THIS FIRST for errors
+Gateway service: <code>systemctl status hermes-gateway</code>
+Gateway lock: <code>/root/.hermes/gateway.lock</code>
+Sessions DB: <code>/root/.hermes/state.db</code>
+OpenClaw config (OLD): <code>/data/.openclaw/openclaw.json</code> (inside openclaw container)
+Docker containers: <code>docker ps</code> (openclaw-cbxv-openclaw-1, traefik, freqtrade*, mt5-web, veritytech)
+</div>
+
+<div class="recovery"><strong>🔍 DIAGNOSTIC COMMANDS:</strong>
+<em>Find what's using a port:</em> <code>ss -tlnp | grep PORT</code>
+<em>Check PM2 processes:</em> <code>pm2 list</code> / <code>pm2 logs NAME --lines 20</code>
+<em>Check container logs:</em> <code>docker logs hermes-bot --tail 50</code>
+<em>Ginnie gateway logs:</em> <code>journalctl -u hermes-gateway --no-pager -n 30</code>
+<em>Check disk space:</em> <code>df -h /</code>
+<em>Check memory:</em> <code>free -h</code>
+<em>Test endpoint:</em> <code>curl -sk https://DOMAIN/health</code>
+<em>Git status:</em> <code>cd /data/lgiap && git log --oneline -3</code>
+</div>
+
+<div class="recovery"><strong>🤖 BABIGON-SPECIFIC NOTES:</strong>
+• Running inside <code>hermes-bot</code> Docker container on Contabo VPS
+• Container uses HOST networking → can access all host ports via localhost
+• Container restart WIPES ephemeral files → GitHub backup is critical
+• SSH key at <code>/root/.ssh/hermes_key</code> INSIDE container (survives via persistence patch)
+• Trading bot files: <code>/root/arb-scanner/</code> in container (restore from github.com/auttapongb/arb-scanner)
+• Bybit API key: <code>0ToflNv3n1mFpnkY3r</code>
+• Bybit RSA key: <code>/root/.bybit/private.pem</code>
+• Env: <code>/root/.bybit_env</code>
+</div>
+
+<div class="recovery"><strong>🟠 GINNIE-SPECIFIC NOTES:</strong>
+• Hermes Gateway runs as systemd service (NOT Docker for bot)
+• Old OpenClaw container (<code>openclaw-cbxv-openclaw-1</code>) is STOPPED — do NOT restart
+• Discord token in <code>/root/.hermes/.env</code> (DISCORD_TOKEN)
+• Model: <code>deepseek/deepseek-v4-pro</code> (native DeepSeek provider)
+• If "Something went wrong" in Discord: check <code>/root/.hermes/logs/gateway.log</code>
+• Port 18789: if zombie docker-proxy holds it → <code>docker stop openclaw-cbxv-openclaw-1</code>
+• Ollama on :11434 (tunneled from Main VPS for LGIAP embeddings)
+</div>
+
+<div class="recovery"><strong>🗄 DATABASES (Main VPS):</strong>
+PostgreSQL main: <code>127.0.0.1:5432</code> (sasin, lgiap databases)
+PostgreSQL n8n: <code>127.0.0.1:5433</code>
+Redis cache: <code>127.0.0.1:6379</code>
+Redis queue: <code>127.0.0.1:6380</code>
+LGIAP tables: <code>messages</code>, <code>groups</code>, <code>users</code> (with pgvector embeddings)
+</div>
+
+<div class="recovery"><strong>📊 TRADING BOTS (from bybit-arb-trading-journal):</strong>
+Wallet: ~$195 total (BTC grid $100 FUND + SOL grid $20 FUND + $55 UNIFIED)
+Config: <code>/root/arb-scanner/bybit_execution.py</code> (spread arb, PAPER MODE)
+Funding bot: <code>/root/arb-scanner/funding_v3.py</code> (PAPER)
+Dashboard: <code>source /root/.bybit_env && python3 /root/arb-scanner/trade_dashboard.py</code>
+Cron: <code>dual-bot-monitor</code> (job_id 99ee05457194) — every 15min → Discord
+Git: <code>github.com/auttapongb/arb-scanner</code>
+⚠ Never trade blacklisted symbols. MIN_SPREAD ≥ 1.5%. Exit order: PERP first, then SPOT.
+</div>
+
+<div class="recovery"><strong>🔄 GIT REPOS:</strong>
+LGIAP: <code>github.com/auttapongb/lgiap</code> (main branch)
+Arb Scanner: <code>github.com/auttapongb/arb-scanner</code>
+Sasin CFOTH: <code>github.com/auttapongb/sasin-cfoth-ai</code>
+⚠ No secrets, API keys, or media files in any repo!</div>
+
+  </div>
+</div>
 </div>
 
 <script>

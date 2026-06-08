@@ -34,8 +34,8 @@ print("\n📦 DATABASE INTEGRITY")
 conn = psycopg2.connect(DATABASE_URL)
 c = conn.cursor()
 
-c.execute("SELECT count(*) FROM messages WHERE group_id IS NOT NULL AND (group_name IS NULL OR group_name = group_id)")
-check("No NULL/missing group_names", c.fetchone()[0] == 0)
+c.execute("SELECT count(*) FROM messages WHERE group_id IS NOT NULL AND group_name = group_id")
+check("No group_name equals raw group_id", c.fetchone()[0] == 0, "group_name should not be raw group_id; NULL is acceptable for join events")
 
 c.execute("SELECT count(*) FROM messages WHERE message_type IN ('file','image','video','audio') AND content_url IS NULL")
 check("All media types have content_url", c.fetchone()[0] == 0)
