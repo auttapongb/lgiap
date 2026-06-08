@@ -17,3 +17,7 @@ __pycache__/
 line.env
 db.env
 drive.env
+venv/
+__pycache__/
+*.pyc
+lgiap.db
