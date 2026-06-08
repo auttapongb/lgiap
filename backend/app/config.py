@@ -1,14 +1,16 @@
 """LGIAP Configuration"""
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).parent.parent
+load_dotenv(BASE_DIR.parent / '.env')  # .env lives at /data/lgiap/.env, not under backend/
 
 # PostgreSQL
 DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://postgres:lgiap123@127.0.0.1:5432/lgiap")
 
 # Redis
-REDIS_URL = os.environ.get("REDIS_URL", "redis://127.0.0.1:6380/0")
+REDIS_URL = os.environ.get("REDIS_URL", "redis://:langfuse2026@127.0.0.1:6379/0")
 
 # LINE
 LINE_CHANNEL_SECRET = os.environ.get("LINE_CHANNEL_SECRET", "")

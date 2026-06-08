@@ -6,6 +6,8 @@ from app.config import DATABASE_URL, EMBEDDING_API_URL, EMBEDDING_MODEL, GEMINI_
 
 logger = logging.getLogger("lgiap.ingest")
 
+from app.profile_sync import sync_profiles
+
 # Import after dramatiq broker is set up
 from app.tasks import redis_broker
 
@@ -31,14 +33,14 @@ def _get_group_name(group_id: str) -> str:
                 timeout=5
             )
             if req.status_code == 200:
-                name = req.json().get("groupName", group_id)
+                name = req.json().get("groupName")  # None if missing, not raw group_id
                 _group_name_cache[group_id] = name
                 return name
         except Exception:
             pass
     
-    _group_name_cache[group_id] = group_id
-    return group_id
+    _group_name_cache[group_id] = None
+    return None
 
 
 @dramatiq.actor(max_retries=3, min_backoff=2000, max_backoff=30000)
@@ -71,6 +73,9 @@ def queue_message(event_type: str, message_type: str, message_id: str, user_id: 
         msg_id = cur.fetchone()[0]
         conn.commit()
         
+        # Auto-sync LINE user profile (name + picture) for this sender
+        sync_user_profile.send(user_id, group_id)
+        
         # Chain: AI filter (if text message) → embedding → 2nd Brain
         if message_type == "text" and text:
             filter_message.send(msg_id, text, user_id, group_id)
@@ -81,6 +86,69 @@ def queue_message(event_type: str, message_type: str, message_id: str, user_id: 
         raise
     finally:
         conn.close()
+
+@dramatiq.actor(max_retries=1, min_backoff=3000)
+def sync_user_profile(user_id: str, group_id: str):
+    """Fetch LINE display name + profile picture for a user if not already synced."""
+    if not user_id or user_id == 'system':
+        return
+    
+    from app.config import LINE_CHANNEL_TOKEN
+    if not LINE_CHANNEL_TOKEN:
+        return
+    
+    # Check if profile already exists in DB
+    conn = _get_db()
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT 1 FROM profiles WHERE user_id = %s", (user_id,))
+        if cur.fetchone():
+            return
+    finally:
+        conn.close()
+    
+    # Fetch from LINE API
+    try:
+        headers = {"Authorization": f"Bearer {LINE_CHANNEL_TOKEN}"}
+        # Best data from group member endpoint
+        if group_id:
+            resp = requests.get(
+                f"https://api.line.me/v2/bot/group/{group_id}/member/{user_id}",
+                headers=headers, timeout=5
+            )
+            if resp.status_code != 200:
+                resp = requests.get(
+                    f"https://api.line.me/v2/bot/profile/{user_id}",
+                    headers=headers, timeout=5
+                )
+        else:
+            resp = requests.get(
+                f"https://api.line.me/v2/bot/profile/{user_id}",
+                headers=headers, timeout=5
+            )
+        
+        if resp.status_code == 200:
+            data = resp.json()
+            name = data.get("displayName", user_id)
+            pic = data.get("pictureUrl", "")
+            
+            conn = _get_db()
+            try:
+                cur = conn.cursor()
+                cur.execute("""
+                    INSERT INTO profiles (user_id, display_name, picture_url, group_id, last_synced_at)
+                    VALUES (%s, %s, %s, %s, NOW())
+                    ON CONFLICT (user_id) DO UPDATE
+                    SET display_name = EXCLUDED.display_name,
+                        picture_url = EXCLUDED.picture_url,
+                        last_synced_at = NOW()
+                """, (user_id, name, pic, group_id))
+                conn.commit()
+                logger.info(f"Profile synced: {user_id[:12]}... → {name} {'🖼' if pic else ''}")
+            finally:
+                conn.close()
+    except Exception as e:
+        logger.debug(f"Profile sync skipped for {user_id[:12]}...: {e}")
 
 @dramatiq.actor(max_retries=2, min_backoff=5000, max_backoff=60000)
 def filter_message(msg_id: int, text: str, user_id: str, group_id: str):

@@ -107,7 +107,7 @@ async def dashboard(group: str = Query(None), relevance: str = Query(None)):
         mid, gid, gname, uid, mtype, text, ts, rating, topic, thread_id, content_url, display_name, pic_url = m
         
         name = display_name or (uid[:12] if uid else "-")
-        avatar_html = f'<img src="{pic_url}" class="u-avatar" onerror="this.style.display=\'none\'">' if pic_url else f'<span class="u-fallback">{name[0].upper()}</span>'
+        avatar_html = f'<img src="{pic_url}" class="u-avatar" referrerpolicy="no-referrer" crossorigin="anonymous" loading="lazy" onerror="this.style.display=\'none\'">' if pic_url else f'<span class="u-fallback">{name[0].upper()}</span>'
         user_html = f'{avatar_html}<span class="u-name">{name}</span>'
         
         icon = type_icon.get(mtype, "📨")
